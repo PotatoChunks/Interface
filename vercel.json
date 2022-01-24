@@ -1,8 +1,11 @@
 {
-  "routes": [
+  "builds": [
     {
-      "handle": "filesystem"
-    },
+      "src": "./index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
     {
       "src": "/(.*)",
       "status": 404,
