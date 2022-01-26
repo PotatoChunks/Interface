@@ -3,7 +3,8 @@ const router = express.Router()
 const fs = require("fs")
 
 router.get("/test",(req,res)=>{
-    fs.writeFile("./test.txt","Hello",{encoding:"utf8"},(err)=>{})
+    let user = {name:"狗蛋",age:18,status:true}
+    fs.writeFileSync("./test.txt",JSON.stringify(user),{encoding:"utf8"})
     res.send({
         code:0,
         msg:"成功"
@@ -16,7 +17,7 @@ router.get("/read",(req,res)=>{
     res.send({
         code:0,
         msg:"成功",
-        data
+        data:JSON.parse(data)
     })
 })
 
