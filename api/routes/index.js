@@ -3,7 +3,7 @@ const router = express.Router()
 const fs = require("fs")
 
 router.get("/test",(req,res)=>{
-    fs.writeFill("./test.txt","Hello",{encoding:"utf8"},(err)=>{})
+    fs.writeFile("./test.txt","Hello",{encoding:"utf8"},(err)=>{})
     res.send({
         code:0,
         msg:"成功"
