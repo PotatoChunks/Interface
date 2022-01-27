@@ -47,14 +47,14 @@ async function getRequ(reqUrl, pages=1) {
     // 写入文件
     //fs.writeFile("./a.html",data,{encoding:"utf8"},(err,w)=>{})
     // 封面信息
-    let imgData = $('.imgbox');
+    // let imgData = $('.imgbox');
     // //获取封面图片
 
     let imgs = [];
 
-    imgData.each(function (index, item) {
-        imgs.push(getUrl($(item).css('background-image')))
-    });
+    // imgData.each(function (index, item) {
+    //     imgs.push(getUrl($(item).css('background-image')))
+    // });
     // 获取每个封面链接
     let titleHref = $('.thumbnail h2>a');
     // 标题连接
