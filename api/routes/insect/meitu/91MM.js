@@ -6,7 +6,7 @@ const router = express.Router();
 const {JSDOM} = require("jsdom");
 const cheerio = require("cheerio");
 // https 请求
-const request = require('../../../../util/request');
+const request = require('../../../../util/request')();
 
 // 请求路径
 const url = "https://www.94imm.com";
@@ -126,11 +126,10 @@ router.get('/', async (req, res) => {
     }catch (e) {
         console.log(e);
         // 出错
+        images.length = 0;
         images.push('https://api.lolicon.app/assets/img/lx.jpg')
     }
-    res.send({
-        images
-    })
+    res.send(images)
 });
 
 
