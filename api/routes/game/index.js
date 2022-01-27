@@ -8,7 +8,7 @@ const path = require('path');
 
 //  数组移块
 router.get("/number",(req,res)=>{
-    res.sendFile(path.join(__dirname,"../../../public/numberPlace/1.html"))
+    res.redirect("numberPlace/1.html")
 });
 
 
