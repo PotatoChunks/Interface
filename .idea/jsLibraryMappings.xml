@@ -2,7 +2,7 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{api/node_modules}" />
-    <file url="PROJECT" libraries="{api/node_modules, axios}" />
+    <file url="PROJECT" libraries="{api/node_modules, axios, jquery}" />
     <includedPredefinedLibrary name="Node.js Core" />
   </component>
 </project>
