@@ -5,7 +5,7 @@ const router = express.Router()
 const cheerio = require('cheerio')
 
 router.get('/',(req,res)=>{
-    req.send({code:1,msg:"哦豁哦豁哦豁"})
+    res.send({code:1,msg:"哦豁哦豁哦豁"})
 })
 
 
