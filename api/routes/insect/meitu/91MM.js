@@ -124,6 +124,7 @@ router.get('/', async (req, res) => {
     try{
         await getRequ(url, num);
     }catch (e) {
+        console.log(e);
         // 出错
         images.push('https://api.lolicon.app/assets/img/lx.jpg')
     }
