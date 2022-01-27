@@ -2,10 +2,16 @@ const express = require('express')
 const router = express.Router()
 const fs = require("fs")
 
+// 爬虫
 router.use("/insect",require('./insect/insect'));
 
+// 下游戏
+router.use('/game',require('./game/index'));
+
+// ico图标
 router.get("/favicon.ico",(req,res)=>{
     // ico 图标
+    res.send()
 });
 
 
