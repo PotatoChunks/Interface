@@ -118,6 +118,7 @@ async function getImgReq(reqUrlArr, pages) {
 
 
 router.get('/', async (req, res) => {
+    images.length = 0;
     let {num} = req.query;
     // 请求 连接 和 张数
     // 最多一次请求30张
@@ -126,7 +127,6 @@ router.get('/', async (req, res) => {
     }catch (e) {
         console.log(e);
         // 出错
-        images.length = 0;
         images.push('https://api.lolicon.app/assets/img/lx.jpg')
     }
     res.send(images)
