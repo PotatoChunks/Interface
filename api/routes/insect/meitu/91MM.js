@@ -70,11 +70,12 @@ async function getRequ(reqUrl, pages=1) {
     shuffle(imgs);
     // 裁切所要的
     // 返回
-    images.push(...imgs.slice(0, pages))
+    images.push(...imgs)
 }
 
 // 请求每个封面的内容
 async function getImgReq(reqUrlArr, pages) {
+    // console.log("请求");
     // 打乱数组
     shuffle(reqUrlArr);
     //随机数组下标 0~数组最大长度
@@ -112,24 +113,48 @@ async function getImgReq(reqUrlArr, pages) {
         let secondImgArr = await getImgReq(reqUrlArr, num);
         imageArr.push(...secondImgArr);
     }
-    // 返回特定长度的图片数组
-    return imageArr.slice(0, pages);
+    // 返回图片数组
+    return imageArr;
+}
+
+// 处理图片返回用户请求数
+function imgSlice(imgArr,num=1){
+    return imgArr.splice(0,num);
 }
 
 
 router.get('/', async (req, res) => {
-    images.length = 0;
     let {num} = req.query;
-    // 请求 连接 和 张数
+    //类型是否是数字
+    num = Number(num);
+    if(!num) num=1;
+    // 如果是小数向下取整
+    num = Math.floor(num);
+    // 是否访问过
+    // 如果访问过 图片数组会有内容直接删除上一次访问的元素并返回
+    if(images.length !== 0 && images.length > num){
+        res.send(imgSlice(images,num))
+        // console.log("访问过一次,并且请求的数量数组里有",images.length);
+        return;
+    }
+    // 请求 链接 和 张数
     // 最多一次请求30张
     try{
         await getRequ(url, num);
     }catch (e) {
+        // 打印错误日志
         console.log(e);
+        // 清空用户请求张数
+        num = 1;
+        //清空图片数组
+        images.length=0
         // 出错
         images.push('https://api.lolicon.app/assets/img/lx.jpg')
     }
-    res.send(images)
+    // 返回给用户的实际张数
+    
+    res.send(imgSlice(images,num))
+    // console.log(images.length);
 });
 
 
