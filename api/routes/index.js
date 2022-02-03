@@ -5,8 +5,11 @@ const fs = require("fs")
 // 爬虫
 router.use("/insect",require('./insect/insect'));
 
-// 下游戏
+// 游戏
 router.use('/game',require('./game/index'));
+
+// 链接展示
+router.use('/link',require('./link/link'));
 
 // ico图标
 router.get("/favicon.ico",(req,res)=>{
