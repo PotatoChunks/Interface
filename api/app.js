@@ -4,8 +4,6 @@ const express = require('express')
 
 const app = express()
 
-// 数据库
-const mongoDB = require('./db/db')
 
 // CORS & Preflight request
 app.use((req, res, next) => {
