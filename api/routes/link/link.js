@@ -7,7 +7,7 @@ const router = express.Router()
 
 //const mongodb = require("./db");
 const { MongoClient } = require('mongodb');
-const uri = "mongodb+srv://<admin>:<admin>@mongodb1.bwdc8.mongodb.net/mongodb1?retryWrites=true&w=majority";
+const uri = "mongodb+srv://<admin>:<admin>@mongodb1.bwdc8.mongodb.net/admin?retryWrites=true&w=majority";
 
 
 //
