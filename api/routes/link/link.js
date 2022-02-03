@@ -13,8 +13,8 @@ const uri = "mongodb+srv://root:root@mongodb1.bwdc8.mongodb.net/admin?retryWrite
 //
 router.get("/",async (req,res)=>{
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const db = await client.db('sample_analytics');
-    var result = await db.collection("accounts").find().toArray();
+    const db = await client.db('blog');
+    var result = await db.collection("user").find().toArray();
     res.status(200).json(result);
 })
 
