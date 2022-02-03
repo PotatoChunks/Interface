@@ -9,16 +9,25 @@ const router = express.Router()
 const { MongoClient } = require('mongodb');
 const uri = "mongodb+srv://root:root@mongodb1.bwdc8.mongodb.net/admin?retryWrites=true&w=majority";
 
+const userDB = require('../../db/user')
 
 //
 router.get("/",async (req,res)=>{
-    const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const db = await client.db('blog');
-    var result = await db.collection("user").find().toArray();
-    res.send({
-        code:0,
-        data:result
-    })
+    let {user,pwd} = req.query;
+    userDB.create({user,pwd})
+        .then(d=>{
+            res.send({
+                code : 0,
+                msg : '注册成功'
+            })
+        })
+        .catch(e=>{
+            console.log(e)
+            res.send({
+                code : 4,
+                msg: '服务器错误'
+            })
+        })
 })
 
 
