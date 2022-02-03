@@ -13,8 +13,8 @@ const uri = "mongodb+srv://<admin>:<admin>@mongodb1.bwdc8.mongodb.net/myMongodb?
 //
 router.get("/",async (req,res)=>{
     const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const db = await client.db('[sample_analytics]');
-    var result = await db.collection("[accounts]").find().toArray();
+    const db = await client.db('[test]');
+    var result = await db.collection("[user]").find().toArray();
     res.status(200).json(result);
 })
 
