@@ -1,10 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>页面</title>
+    <!-- 请求头不发送referrer -->
+    <meta name="referrer" content="never">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <title>text</title>
+    <style>
+        [v-cloak] { display: none }
+        body{
+            margin:0;
+        }
+        .img{
+            margin:20px auto 0;
+            height: 90vh;
+            width: 80vw;
+            background: url("https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg") no-repeat local center/cover;
+        }
+        .img>img{
+            width: 100%;
+        }
+        .getImg{
+            display: flex;
+            justify-content: center;
+            position: absolute;
+            bottom:0;
+            width: 100vw;
+            margin: 0 auto 0;
+        }
+    </style>
 </head>
-<body>
 
+<body>
+<div id="app" v-cloak>
+    <!-- 图片 -->
+    <div class="img" :style="'background-image:url('+url+')'">
+        <!-- <img :src="url" > -->
+    </div>
+    <!-- 按钮 -->
+    <div class="getImg">
+        <el-button type="primary" @click="getImg">获取图片</el-button>
+    </div>
+</div>
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.24.0/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                url: "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+                loginMsg:{
+                    lock: true,
+                    text: '正在加载...',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                },
+                loginObj:null
+            }
+        },
+        methods:{
+            async getImg(){
+                this.loginObj = this.$loading(this.loginMsg);
+                //https://api-potatochunks.vercel.app/insect/meitu/91mm
+                //http://localhost:3000/insect/meitu/91mm
+                try{
+                    let data = await axios.get('http://localhost:3000/insect/meitu/91mm');
+                    this.url = data.data[0];
+                }catch(e){
+                    console.log(e);
+                    //TODO handle the exception
+                    this.url = 'https://api.lolicon.app/assets/img/lx.jpg';
+                }
+
+                this.loginObj.close()
+            }
+        },
+        mounted() {
+            this.getImg()
+        }
+    })
+</script>
 </body>
+
 </html>
