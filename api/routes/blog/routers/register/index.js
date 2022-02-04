@@ -72,7 +72,7 @@ router.post("/userPush",(req,res)=>{
   }
 
   //后端再次验证验证码 req.session.codeData.text.toLocaleLowerCase()
-  if (code.toLocaleLowerCase() !== codeNum.text.toLocaleString()) {
+  if (code.toLocaleLowerCase() !== codeNum.text.toLocaleLowerCase()) {
     res.send({
       code : 2,
       msg : "验证码错误"
