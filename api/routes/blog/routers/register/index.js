@@ -28,8 +28,7 @@ router.post("/code",(req,res)=>{
   let svgData = svgCaptcha.create();
   req.session.codeData = svgData;
   req.session.codeTime = new Date().getTime();
-  console.log(req.session.codeData)
-  console.log(req.session)
+  console.log(req.session.codeData.text)
   res.send({
     code : 0,
     data : svgData.data,
@@ -42,7 +41,6 @@ router.post("/code",(req,res)=>{
 router.post("/checkCode",(req,res)=>{
   let {value} = req.body;
 //验证码是否正确的判断
-  console.log(req.session)
   console.log(req.session.codeData)
 
   if(!value || (value.toLocaleLowerCase() !== req.session.codeData.text.toLocaleLowerCase())){
