@@ -11,6 +11,9 @@ router.use('/game',require('./game/index'));
 // 链接展示
 router.use('/link',require('./link/link'));
 
+// 个人博客
+router.use('/blog',require('./blog/blog'));
+
 // ico图标
 router.get("/favicon.ico",(req,res)=>{
     // ico 图标
