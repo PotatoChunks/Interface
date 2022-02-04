@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-require('./27017')
+
 
 let diary = mongoose.model("diary",new mongoose.Schema({
   txt : String,

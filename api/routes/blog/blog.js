@@ -24,7 +24,7 @@ router.use(session({
     ,rolling:true //用户和页面交互的时候刷新cookie时间
     ,resave:false //是否每次重新存储session
     ,saveUninitialized:false //初始化
-    ,store : new connectMongo({url : "mongodb+srv://root:root@mongodb1.bwdc8.mongodb.net/blog?retryWrites=true&w=majority"})//将session存储到数据库blog里
+    ,store : new connectMongo({url : "mongodb+srv://root:root@mongodb1.bwdc8.mongodb.net/blog_db?retryWrites=true&w=majority"})//将session存储到数据库blog里
 }));
 
 //路由设置

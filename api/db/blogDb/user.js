@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 
-require('./27017')
+
 let userSchema = new mongoose.Schema({
   user:{type:String,require:true},
   pwd:{type:String,require:true},

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-require('./27017')
+
 //
 let Schema = mongoose.Schema;
 //最近访客表
