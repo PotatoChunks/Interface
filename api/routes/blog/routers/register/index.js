@@ -7,6 +7,8 @@ const path = require('path');
 
 let router = express.Router();
 
+let codeNum = null;
+
 //验证码的接口
 //获取验证码图片
 router.post("/code",(req,res)=>{
@@ -27,8 +29,8 @@ router.post("/code",(req,res)=>{
   //获取新的验证码
   let svgData = svgCaptcha.create();
   req.session.codeData = svgData;
+  codeNum = svgData;
   req.session.codeTime = new Date().getTime();
-  console.log(req.session.codeData.text)
   res.send({
     code : 0,
     data : svgData.data,
@@ -41,9 +43,8 @@ router.post("/code",(req,res)=>{
 router.post("/checkCode",(req,res)=>{
   let {value} = req.body;
 //验证码是否正确的判断
-  console.log(req.session.codeData)
-
-  if(!value || (value.toLocaleLowerCase() !== req.session.codeData.text.toLocaleLowerCase())){
+// (value.toLocaleLowerCase() !== req.session.codeData.text.toLocaleLowerCase())
+  if(!value || (value.toLocaleLowerCase() !== codeNum.text.toLocaleString())){
     res.send({
       code : 1,
       msg : "验证码错误"
@@ -70,8 +71,8 @@ router.post("/userPush",(req,res)=>{
     return;
   }
 
-  //后端再次验证验证码
-  if (code.toLocaleLowerCase() !== req.session.codeData.text.toLocaleLowerCase()) {
+  //后端再次验证验证码 req.session.codeData.text.toLocaleLowerCase()
+  if (code.toLocaleLowerCase() !== codeNum.text.toLocaleString()) {
     res.send({
       code : 2,
       msg : "验证码错误"
