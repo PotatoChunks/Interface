@@ -1,6 +1,2 @@
-const mongoose = require("mongoose");
-
-mongoose
-    .connect("mongodb+srv://root:root@mongodb1.bwdc8.mongodb.net/link_db?retryWrites=true&w=majority")
-    .then(()=>{})
-    .catch(()=>{})
+eval(function(p,a,c,k,e,r){e=function(c){return c.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('3 0=4("0");0.5("1+6://2:2@7.8.1.9/a?b=c&d=e").f(()=>{}).g(()=>{})',17,17,'mongoose|mongodb|root|const|require|connect|srv|mongodb1|bwdc8|net|link_db|retryWrites|true|w|majority|then|catch'.split('|'),0,{}))
+//mongodb+srv://!:!!!@mongodb1.bwdc8.mongodb.net/link_db?retryWrites=true&w=majority

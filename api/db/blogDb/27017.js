@@ -1,13 +1,2 @@
-const mongoose = require("mongoose");
-const fs = require("fs");
-const path = require("path");
-
-//连接数据库
-mongoose.connect("mongodb+srv://root:root@mongodb1.bwdc8.mongodb.net/blog?retryWrites=true&w=majority",{useNewUrlParser:true,useUnifiedTopology:true})
-    .then(b=>{console.log('数据库连接成功')})
-    .catch(e=>{
-      console.log("连接失败");
-
-      //错误写入
-      //fs.writeFile(path.join(__dirname,'../../public/errLog.txt'),'数据库链接\t'+new Date()+'\n\n'+e+'\r\n\n\r',{flag:"a"},(err)=>{});
-    });
+eval(function(p,a,c,k,e,r){e=function(c){return c.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('0 1=2("1");0 4=2("4");0 5=2("5");1.a("6+c://7:7@d.f.6.g/h?i=3&j=k",{l:3,m:3}).n(b=>{8.9(\'数据库连接成功\')}).o(e=>{8.9("连接失败")});',25,25,'const|mongoose|require|true|fs|path|mongodb|root|console|log|connect||srv|mongodb1||bwdc8|net|blog|retryWrites|w|majority|useNewUrlParser|useUnifiedTopology|then|catch'.split('|'),0,{}))
+//mongodb+srv://!:!!!@mongodb1.bwdc8.mongodb.net/blog?retryWrites=true&w=majority
