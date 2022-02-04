@@ -44,7 +44,7 @@ router.post("/checkCode",(req,res)=>{
   let {value} = req.body;
 //验证码是否正确的判断
 // (value.toLocaleLowerCase() !== req.session.codeData.text.toLocaleLowerCase())
-  if(!value || (value.toLocaleLowerCase() !== codeNum.text.toLocaleString())){
+  if(!value || (value.toLocaleLowerCase() !== codeNum.text.toLocaleLowerCase())){
     res.send({
       code : 1,
       msg : "验证码错误"

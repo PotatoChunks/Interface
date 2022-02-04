@@ -62,9 +62,11 @@ router.post("/",(req,res)=>{
       //登录成功
       //记录session状态
       req.session.login = data;
+      data.pwd = null;
       res.send({
         code : 0,
-        msg : '登录成功'
+        msg : '登录成功',
+        data
       });
       //删除这个用户之前的访客记录
       visitor.deleteMany({user:data._id})
