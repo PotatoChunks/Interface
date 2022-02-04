@@ -6,7 +6,7 @@ const express = require('express')
 const router = express.Router()
 
 // link数据库
-const listDb = require('../../db/linkDb/db')
+//const listDb = require('../../db/linkDb/db')
 
 //
 router.get("/",async (req,res)=>{

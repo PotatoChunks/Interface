@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 //数据库连接
-const mongodb =require('../../db/blogDb/27017');
+//const mongodb =require('../../db/blogDb/27017');
 
 const session = require("express-session");
 const connectMongo = require("connect-mongo")(session);//将session存储到服务器里

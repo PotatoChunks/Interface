@@ -1,6 +1,6 @@
 //显示在前端的友链
 const mongoose = require("mongoose");
-
+const moDb = require('../27017')
 //友链表
 module.exports = mongoose.model("link",new mongoose.Schema({
   name:{type:String,require:true},//名称
