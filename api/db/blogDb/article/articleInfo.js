@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 //tag表,标签表,方便管理
-
+require('../27017')
 let articleInfo = mongoose.model("articleInfo",new mongoose.Schema({
   tags:[String],
   num:Number

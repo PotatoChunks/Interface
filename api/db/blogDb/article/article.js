@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+require('../27017')
 let Schema = mongoose.Schema;
 //文章表
 let article = mongoose.model("article",new Schema({
