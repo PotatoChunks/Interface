@@ -11,6 +11,11 @@ const router = express.Router()
 //
 router.get("/",async (req,res)=>{
     let listList = require('../../db/linkDb/linkList')
+    listList.create({
+        title:"百度",
+        href:"https://www.baidu.com",
+        describe:"百度一下你就知道"
+    })
     let {user,pwd} = req.query;
     res.send({
         user,
