@@ -10,20 +10,25 @@ const router = express.Router()
 
 //
 router.get("/",async (req,res)=>{
+    let {title,href} = req.query
     let listList = require('../../db/linkDb/linkList')
     await listList.create({
-        title:"百度",
-        href:"https://www.baidu.com",
+        title:title,
+        href:href,
         describe:"百度一下你就知道"
     }).then(_=>{
         console.log('链接添加成功')
     }).catch(_=>{
         console.log('链接添加失败')
     })
-    let {user,pwd} = req.query;
-    res.send({
-        user,
-        pwd
+})
+
+router.get('/get',async (req,res)=>{
+    let listList = require('../../db/linkDb/linkList')
+    await listList.find({}).then(data=>{
+        res.send({
+            data
+        })
     })
 })
 
