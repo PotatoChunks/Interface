@@ -151,6 +151,8 @@ router.post("/logout",(req,res)=>{
 
 /*管理员登录*/
 router.post('/adminLogin',(req,res)=>{
+  let userDB = require("../../../../db/blogDb/user");
+  let visitor = require("../../../../db/blogDb/visitor");
   let {user ,pwd} = req.body;
   //判断是否已经登录
   if (req.session.adminLogin) {
@@ -217,6 +219,8 @@ router.post('/adminLogin',(req,res)=>{
 
 /*验证登录*/
 router.post('/adminIfLogin',(req,res)=>{
+  let userDB = require("../../../../db/blogDb/user");
+  let visitor = require("../../../../db/blogDb/visitor");
   if (req.session.adminLogin && req.session.adminLogin.admin) {
     res.send({
       code : 0,
