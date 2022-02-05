@@ -178,7 +178,7 @@ router.post('/updateArticle',(req,res)=>{
   }
 
   //如果为true就添加分类
-  if (ifTag) {
+  if (!ifTag) {
     articleInfo.updateOne({},{$push:{tags:tag}})
         .then(d=>{})
         .catch(e=>{});
