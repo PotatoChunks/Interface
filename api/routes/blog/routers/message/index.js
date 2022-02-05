@@ -1,6 +1,6 @@
 const express = require('express');
 //评论表
-const commentDB = require('../../../../db/blogDb/comment');
+//const commentDB = require('../../../../db/blogDb/comment');
 const fs = require('fs');
 const path = require('path');
 
@@ -11,6 +11,7 @@ const router = express.Router();
 //提交留言
 router.post('/createRegister',(req,res)=>{
   let {user,content} = req.body;
+  let commentDB = require('../../../../db/blogDb/comment');
   if (!user||!content) {
     //没有值
     res.send({
@@ -39,6 +40,7 @@ router.post('/createRegister',(req,res)=>{
 
 //获取留言
 router.post('/getMessage',(req,res)=>{
+  let commentDB = require('../../../../db/blogDb/comment');
   //获取留言列表
   commentDB.find({},{__v:0},{sort:{_id:-1}})
       .populate("user",{_id:1,user:1,photo:1,admin:1})
@@ -62,6 +64,7 @@ router.post('/getMessage',(req,res)=>{
 
 //提交子留言
 router.post('/createChild',(req,res)=>{
+  let commentDB = require('../../../../db/blogDb/comment');
   let {parentId,user,content,fUser} = req.body;
   //格式错误
   if (!parentId || !user || !content || !fUser) {
@@ -114,6 +117,7 @@ router.post('/createChild',(req,res)=>{
 
 /*获取用户评论*/
 router.post('/getMessageList',(req,res)=>{
+  let commentDB = require('../../../../db/blogDb/comment');
   commentDB.find({},{__v:0})
       .populate("user",{_id:1,user:1,photo:1,admin:1})
       .populate("children.user",{_id:1,user:1,photo:1,admin:1})
@@ -135,6 +139,7 @@ router.post('/getMessageList',(req,res)=>{
 
 /*删除用户主评论*/
 router.post('/removeMessage',(req,res)=>{
+  let commentDB = require('../../../../db/blogDb/comment');
   let {id} = req.body;
   //ID是否有值
   if (!id) {
@@ -161,6 +166,7 @@ router.post('/removeMessage',(req,res)=>{
 
 /*删除子评论*/
 router.post('/removeMessageChild',(req,res)=>{
+  let commentDB = require('../../../../db/blogDb/comment');
   let {id} = req.body;
   //判断id是否有值
   if (!id) {

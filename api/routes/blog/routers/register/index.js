@@ -1,6 +1,6 @@
 const express = require("express");
 const svgCaptcha = require("svg-captcha");
-const userDB = require("../../../../db/blogDb/user");
+//const userDB = require("../../../../db/blogDb/user");
 
 const fs = require('fs');
 const path = require('path');
@@ -12,6 +12,7 @@ let codeNum = null;
 //验证码的接口
 //获取验证码图片
 router.post("/code",(req,res)=>{
+  let userDB = require("../../../../db/blogDb/user");
   //超时请求
   if (req.session.codeTime){
 
@@ -41,6 +42,7 @@ router.post("/code",(req,res)=>{
 
 //验证验证码
 router.post("/checkCode",(req,res)=>{
+  let userDB = require("../../../../db/blogDb/user");
   let {value} = req.body;
 //验证码是否正确的判断
 // (value.toLocaleLowerCase() !== req.session.codeData.text.toLocaleLowerCase())
@@ -59,6 +61,7 @@ router.post("/checkCode",(req,res)=>{
 
 //注册用户
 router.post("/userPush",(req,res)=>{
+  let userDB = require("../../../../db/blogDb/user");
   // req.session.codeTime = 0;
   let {user,pwd,code} = req.body;
 

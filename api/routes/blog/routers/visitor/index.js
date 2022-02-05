@@ -1,5 +1,5 @@
 const express = require('express');
-const visitorDB = require('../../../../db/blogDb/visitor');
+// const visitorDB = require('../../../../db/blogDb/visitor');
 const fs = require('fs');
 const path = require('path');
 
@@ -7,6 +7,7 @@ const router = express.Router();
 
 //最近访客
 router.post("/",(req,res)=>{
+  let visitorDB = require('../../../../db/blogDb/visitor');
   //
   visitorDB.find({},{},{skip:0,limit:12,sort:{date:-1}})
       .populate("user",{_id:1,user:1,photo:1})
