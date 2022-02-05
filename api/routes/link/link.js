@@ -11,7 +11,7 @@ const router = express.Router()
 //
 router.get("/",async (req,res)=>{
     let listList = require('../../db/linkDb/linkList')
-    listList.create({
+    await listList.create({
         title:"百度",
         href:"https://www.baidu.com",
         describe:"百度一下你就知道"
