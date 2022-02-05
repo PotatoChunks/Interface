@@ -15,4 +15,4 @@ let linkSchema = new mongoose.Schema({
 })
 
 //链接表
-module.exports = mongoose.model("links",linkSchema);
+module.exports = mongoose.model("list",linkSchema);
