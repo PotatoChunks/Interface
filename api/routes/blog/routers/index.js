@@ -42,7 +42,7 @@ router.use((req, res, next)=>{res.redirect('/#/404')})
 
 // 主页
 router.get('/',(req,res)=>{
-    res.redirect("/blog/index.html")
+    res.redirect("/blog/blog.html")
 })
 
 module.exports = router;
