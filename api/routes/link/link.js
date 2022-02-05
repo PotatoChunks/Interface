@@ -10,7 +10,7 @@ const router = express.Router()
 
 //
 router.get("/",async (req,res)=>{
-    const listDb = require('../../db/linkDb/db')
+    let listList = require('../../db/linkDb/linkList')
     let {user,pwd} = req.query;
     res.send({
         user,
