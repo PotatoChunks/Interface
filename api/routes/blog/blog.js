@@ -18,6 +18,13 @@ router.use(logger('dev'));
 router.use(cookieParser());
 
 //设置session后端cookie ,token
+router.use(session({
+    secret:"potatoChunks",
+    cookie:{maxAge:2*60*60*1000},
+    rolling:true,
+    resave:false,
+    saveUninitialized:false
+}))
 
 
 //路由设置

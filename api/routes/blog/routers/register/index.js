@@ -11,8 +11,9 @@ let codeNum = null;
 
 //验证码的接口
 //获取验证码图片
-router.post("/code",(req,res)=>{
+router.post("/code",async (req,res)=>{
   let userDB = require("../../../../db/blogDb/user");
+  req.session = {};
   //超时请求
   if (req.session.codeTime){
 
@@ -28,7 +29,7 @@ router.post("/code",(req,res)=>{
     }
   }
   //获取新的验证码
-  let svgData = svgCaptcha.create();
+  let svgData = await svgCaptcha.create();
   req.session.codeData = svgData;
   codeNum = svgData;
   req.session.codeTime = new Date().getTime();
