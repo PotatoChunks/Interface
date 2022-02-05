@@ -7,6 +7,8 @@ let router = express.Router();
 /*获取用户列表*/
 router.post("/getUserList",(req,res)=>{
   let userDB = require("../../../../db/blogDb/user");
+  let messageDB = require('../../../../db/blogDb/comment');
+  let visitorDB = require('../../../../db/blogDb/visitor');
   userDB.find({},{__v:0,pwd:0})
       .then(data=>{
         res.send({
@@ -63,7 +65,9 @@ router.post("/removeUser",(req,res)=>{
 
 /*更改用户的权限*/
 router.post("/upDateUser",(req,res)=>{
-  let userDB = require("../../../../db/blogDb/user");
+    let userDB = require("../../../../db/blogDb/user");
+    let messageDB = require('../../../../db/blogDb/comment');
+    let visitorDB = require('../../../../db/blogDb/visitor');
   let {id, admin ,disabled} = req.body;
   userDB.updateOne({_id:id},{admin,disabled})
       .then(data=>{
@@ -82,7 +86,9 @@ router.post("/upDateUser",(req,res)=>{
 
 /*最近访客*/
 router.post('/getVisitorList',(req,res)=>{
-  let visitorDB = require('../../../../db/blogDb/visitor');
+    let userDB = require("../../../../db/blogDb/user");
+    let messageDB = require('../../../../db/blogDb/comment');
+    let visitorDB = require('../../../../db/blogDb/visitor');
   visitorDB.find({},{__v:0})
       .populate("user",{_id:1,user:1,photo:1,admin:1})
       .then(data=>{
@@ -103,7 +109,9 @@ router.post('/getVisitorList',(req,res)=>{
 
 /*删除最近访客里的单个信息*/
 router.post('/removeVisitor',(req,res)=>{
-  let visitorDB = require('../../../../db/blogDb/visitor');
+    let userDB = require("../../../../db/blogDb/user");
+    let messageDB = require('../../../../db/blogDb/comment');
+    let visitorDB = require('../../../../db/blogDb/visitor');
   let {id} = req.body;
   //判断id是否有值
   if (!id) {

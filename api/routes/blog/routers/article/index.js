@@ -7,7 +7,8 @@ const path = require('path');
 let router = express.Router();
 //文章标签info
 router.post("/getInfo",(req,res)=>{
-  let articleInfo = require("../../../../db/blogDb/article/articleInfo");//文章标签
+  let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+  let article = require("../../../../db/blogDb/article/article");
   //查找
   articleInfo.findOne({},{__v:0})
       .then(data=>{
@@ -29,7 +30,8 @@ router.post("/getInfo",(req,res)=>{
 
 //获取最新文章列表
 router.post("/getArticleNew",(req,res)=>{
-  let article = require("../../../../db/blogDb/article/article");//文章表
+    let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+    let article = require("../../../../db/blogDb/article/article");
   let {skip,limit,tag} = req.body;
   let option = tag?{tag}:{};
   article.find(option,{__v:0},{skip,limit,sort: {date:-1}})
@@ -53,7 +55,8 @@ router.post("/getArticleNew",(req,res)=>{
 
 //获取热门文章
 router.post("/getPopular",(req,res)=>{
-  let article = require("../../../../db/blogDb/article/article");//文章表
+    let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+    let article = require("../../../../db/blogDb/article/article");
   let {limit} = req.body ;
   article.find({},{__v:0},{sort:{pv:-1},skip:0,limit:limit-1})
       .then(data=>{
@@ -75,7 +78,8 @@ router.post("/getPopular",(req,res)=>{
 
 //获取文章
 router.post('/',(req,res)=>{
-  let article = require("../../../../db/blogDb/article/article");//文章表
+    let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+    let article = require("../../../../db/blogDb/article/article");
   let {id} = req.body;
   //没有id
   if (!id) {
@@ -125,7 +129,8 @@ router.post('/',(req,res)=>{
 
 //搜索文章
 router.post('/getSearch',(req,res)=>{
-  let article = require("../../../../db/blogDb/article/article");//文章表
+    let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+    let article = require("../../../../db/blogDb/article/article");
   let {value} = req.body;
   //没有值
   if (!value) {
@@ -213,7 +218,8 @@ router.post('/updateArticle',(req,res)=>{
 
 /*文章列表*/
 router.post("/getArticleShow",(req,res)=>{
-  let article = require("../../../../db/blogDb/article/article");
+    let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+    let article = require("../../../../db/blogDb/article/article");
   //从第几个开始到第几个
   let {skip ,limit} = req.body;
   //没有限制
@@ -244,7 +250,8 @@ router.post("/getArticleShow",(req,res)=>{
 
 /*文章分类获取*/
 router.post('/getArticleInfoList',(req,res)=>{
-  let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+    let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+    let article = require("../../../../db/blogDb/article/article");
   articleInfo.findOne({})
       .then(data=>{
         res.send({
@@ -264,7 +271,8 @@ router.post('/getArticleInfoList',(req,res)=>{
 
 /*文章修改提交*/
 router.post('/articleUpdate',(req,res)=>{
-  let article = require("../../../../db/blogDb/article/article");
+    let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+    let article = require("../../../../db/blogDb/article/article");
   let {type ,title ,content ,outline ,tag ,id ,nexContent} = req.body;
   article.updateOne({_id:id},{type,title,tag,outline,content,nexContent})
       .then(data=>{

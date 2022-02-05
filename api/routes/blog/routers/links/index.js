@@ -8,6 +8,7 @@ const path = require('path');
 const router = express.Router();
 //申请友链
 router.post("/upLink",(req,res)=>{
+  let links = require('../../../../db/blogDb/links/link');
   let linksDB = require('../../../../db/blogDb/links/uploadLinks');
   let {name,href,logo,describe} = req.body;
   if(!name){
@@ -47,6 +48,7 @@ router.post("/upLink",(req,res)=>{
 //获取友链
 router.post('/getLink',(req,res)=>{
   let links = require('../../../../db/blogDb/links/link');
+  let linksDB = require('../../../../db/blogDb/links/uploadLinks');
   //
   links.find({},{__v:0},{sort: {date:-1}})
     .then(data=>{
@@ -72,6 +74,7 @@ router.post('/getLink',(req,res)=>{
 /*获取处理好的友链列表*/
 router.post("/getLinksList",(req,res)=>{
   let links = require('../../../../db/blogDb/links/link');
+  let linksDB = require('../../../../db/blogDb/links/uploadLinks');
   //
   links.find({},{__v:0})
       .then(data=>{
@@ -92,6 +95,7 @@ router.post("/getLinksList",(req,res)=>{
 /*删除处理好的友链*/
 router.post('/removeLinks',(req,res)=>{
   let links = require('../../../../db/blogDb/links/link');
+  let linksDB = require('../../../../db/blogDb/links/uploadLinks');
   let {id} = req.body;
   //id是否有效
   if (!id) {
@@ -118,6 +122,7 @@ router.post('/removeLinks',(req,res)=>{
 
 /*修改处理好的友链*/
 router.post('/updateLinks',(req,res)=>{
+  let links = require('../../../../db/blogDb/links/link');
   let linksDB = require('../../../../db/blogDb/links/uploadLinks');
   let {name ,href ,img ,describe ,id} = req.body;
   //判断是否有值
@@ -145,6 +150,7 @@ router.post('/updateLinks',(req,res)=>{
 
 /*获取等待处理的友链列表*/
 router.post('/getUpdateLinks',(req,res)=>{
+  let links = require('../../../../db/blogDb/links/link');
   let linksDB = require('../../../../db/blogDb/links/uploadLinks');
   linksDB.find({},{__v:0})
       .then(data=>{
@@ -165,7 +171,8 @@ router.post('/getUpdateLinks',(req,res)=>{
 
 /*删除待处理的友链*/
 router.post('/removeUpdateLinks',(req,res)=>{
-  let linksDB = require('../../../../db/blogDb/links/uploadLinks');
+  let links = require('../../../../db/blogDb/links/link');
+  let linksDB = require('../../../../db/blogDb/links/uploadLinks');;
   let {id} = req.body;
   //判断id
   if (!id) {
@@ -193,6 +200,7 @@ router.post('/removeUpdateLinks',(req,res)=>{
 /*上传友链*/
 router.post('/updateUpdateLinks',(req,res)=>{
   let links = require('../../../../db/blogDb/links/link');
+  let linksDB = require('../../../../db/blogDb/links/uploadLinks');
   let {name ,href ,img ,describe ,id} = req.body;
   if (!name || !href || !img ) {
     res.send({
