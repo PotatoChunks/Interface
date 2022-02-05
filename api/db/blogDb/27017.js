@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+mongoose.disconnect();
 
 //连接数据库
 mongoose.connect("mongodb+srv://root:root@mongodb1.bwdc8.mongodb.net/blog_db?retryWrites=true&w=majority",{useNewUrlParser:true,useUnifiedTopology:true})

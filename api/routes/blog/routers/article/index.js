@@ -1,12 +1,13 @@
 const express = require("express");
-const article = require("../../../../db/blogDb/article/article");//文章表
-const articleInfo = require("../../../../db/blogDb/article/articleInfo");//文章标签
+//const article = require("../../../../db/blogDb/article/article");//文章表
+//const articleInfo = require("../../../../db/blogDb/article/articleInfo");//文章标签
 const fs = require('fs');
 const path = require('path');
 
 let router = express.Router();
 //文章标签info
 router.post("/getInfo",(req,res)=>{
+  let articleInfo = require("../../../../db/blogDb/article/articleInfo");//文章标签
   //查找
   articleInfo.findOne({},{__v:0})
       .then(data=>{
@@ -28,6 +29,7 @@ router.post("/getInfo",(req,res)=>{
 
 //获取最新文章列表
 router.post("/getArticleNew",(req,res)=>{
+  let article = require("../../../../db/blogDb/article/article");//文章表
   let {skip,limit,tag} = req.body;
   let option = tag?{tag}:{};
   article.find(option,{__v:0},{skip,limit,sort: {date:-1}})
@@ -51,6 +53,7 @@ router.post("/getArticleNew",(req,res)=>{
 
 //获取热门文章
 router.post("/getPopular",(req,res)=>{
+  let article = require("../../../../db/blogDb/article/article");//文章表
   let {limit} = req.body ;
   article.find({},{__v:0},{sort:{pv:-1},skip:0,limit:limit-1})
       .then(data=>{
@@ -72,6 +75,7 @@ router.post("/getPopular",(req,res)=>{
 
 //获取文章
 router.post('/',(req,res)=>{
+  let article = require("../../../../db/blogDb/article/article");//文章表
   let {id} = req.body;
   //没有id
   if (!id) {
@@ -121,6 +125,7 @@ router.post('/',(req,res)=>{
 
 //搜索文章
 router.post('/getSearch',(req,res)=>{
+  let article = require("../../../../db/blogDb/article/article");//文章表
   let {value} = req.body;
   //没有值
   if (!value) {
@@ -167,6 +172,8 @@ router.post('/getSearch',(req,res)=>{
 
 /*文章添加*/
 router.post('/updateArticle',(req,res)=>{
+  let articleInfo = require("../../../../db/blogDb/article/articleInfo");
+  let article = require("../../../../db/blogDb/article/article");
   let {title ,type ,tag ,outline ,content ,nexContent ,ifTag ,surface} = req.body;
   //数据不完整
   if (!title || !type || !tag || !outline || !content || !nexContent || !surface) {
@@ -177,16 +184,15 @@ router.post('/updateArticle',(req,res)=>{
     return;
   }
 
+  //如果为true就添加分类
   articleInfo.find({tags:tag}).then(data=>{
-      console.log(data)
+      if (!data.length) {
+          articleInfo.updateOne({},{$push:{tags:tag}})
+              .then(d=>{})
+              .catch(e=>{});
+      }
   })
 
-  //如果为true就添加分类
-  if (ifTag) {
-    articleInfo.updateOne({},{$push:{tags:tag}})
-        .then(d=>{})
-        .catch(e=>{});
-  }
   article.create({title ,type ,tag ,outline ,content ,nexContent ,surface})
       .then(data=>{
         articleInfo.updateOne({},{$inc:{num:1}})
@@ -207,6 +213,7 @@ router.post('/updateArticle',(req,res)=>{
 
 /*文章列表*/
 router.post("/getArticleShow",(req,res)=>{
+  let article = require("../../../../db/blogDb/article/article");
   //从第几个开始到第几个
   let {skip ,limit} = req.body;
   //没有限制
@@ -237,6 +244,7 @@ router.post("/getArticleShow",(req,res)=>{
 
 /*文章分类获取*/
 router.post('/getArticleInfoList',(req,res)=>{
+  let articleInfo = require("../../../../db/blogDb/article/articleInfo");
   articleInfo.findOne({})
       .then(data=>{
         res.send({
@@ -256,6 +264,7 @@ router.post('/getArticleInfoList',(req,res)=>{
 
 /*文章修改提交*/
 router.post('/articleUpdate',(req,res)=>{
+  let article = require("../../../../db/blogDb/article/article");
   let {type ,title ,content ,outline ,tag ,id ,nexContent} = req.body;
   article.updateOne({_id:id},{type,title,tag,outline,content,nexContent})
       .then(data=>{
@@ -274,6 +283,8 @@ router.post('/articleUpdate',(req,res)=>{
 
 /*文章单个删除*/
 router.post('/removeArticle',(req,res)=>{
+  let article = require("../../../../db/blogDb/article/article");
+  let articleInfo = require("../../../../db/blogDb/article/articleInfo");
   let {id} = req.body;
   if (!id) {
     res.send({
