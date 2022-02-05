@@ -177,10 +177,9 @@ router.post('/updateArticle',(req,res)=>{
     return;
   }
 
-  articleInfo.create({
-      tags:["其他"],
-      num:1
-  }).then(_=>{}).catch(_=>{})
+  articleInfo.find({tags:tag}).then(data=>{
+      console.log(data)
+  })
 
   //如果为true就添加分类
   if (ifTag) {
