@@ -2,15 +2,17 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 //导入用户表
-const userDB = require("../../../../db/blogDb/user");
+//const userDB = require("../../../../db/blogDb/user");
 //最近访客表
-const visitor = require("../../../../db/blogDb/visitor");
+//const visitor = require("../../../../db/blogDb/visitor");
 
 const fs = require("fs");
 const path = require('path');
 
 //用户登录
 router.post("/",(req,res)=>{
+  let userDB = require("../../../../db/blogDb/user");
+  let visitor = require("../../../../db/blogDb/visitor");
   let {user,pwd} = req.body;
   //判断是否已经登录
   if (req.session.login) {
@@ -90,6 +92,8 @@ router.post("/",(req,res)=>{
 
 //判断是否登录
 router.post("/ifLogin",(req,res)=>{
+  let userDB = require("../../../../db/blogDb/user");
+  let visitor = require("../../../../db/blogDb/visitor");
   //将之前存的数据拿到
   if (!req.session.login) {
     res.send({
@@ -189,9 +193,11 @@ router.post('/adminLogin',(req,res)=>{
           //登录成功
           //记录session状态
           req.session.adminLogin = data;
+          data.pwd = null;
           res.send({
             code : 0,
-            msg : '登录成功'
+            msg : '登录成功',
+            data
           });
         }else{
           //不是管理员

@@ -1,6 +1,6 @@
 //时间轴
 const express = require("express");
-const diaryDB = require('../../../../db/blogDb/diary');
+//const diaryDB = require('../../../../db/blogDb/diary');
 const fs = require('fs');
 const path = require('path');
 
@@ -9,6 +9,7 @@ let router = express.Router();
 
 /*获取时间轴列表*/
 router.post("/getDiaryList",(req,res)=>{
+  let diaryDB = require('../../../../db/blogDb/diary');
   diaryDB.find({},{__v:0})
       .then(data=>{
         res.send({
@@ -31,6 +32,7 @@ router.post("/getDiaryList",(req,res)=>{
 /*管理接口*/
 /*获取时间轴列表*/
 router.get("/adminGetDiaryList",(req,res)=>{
+  let diaryDB = require('../../../../db/blogDb/diary');
   diaryDB.find({},{__v:0},{date:-1})
       .then(data=>{
         res.send({
@@ -49,6 +51,7 @@ router.get("/adminGetDiaryList",(req,res)=>{
 
 /*删除时间轴单个项目*/
 router.post("/removeDiary",(req,res)=>{
+  let diaryDB = require('../../../../db/blogDb/diary');
   let {id} = req.body;
   //判断id是否有效
   if (!id) {
@@ -75,6 +78,7 @@ router.post("/removeDiary",(req,res)=>{
 
 /*修改时间轴单个项目*/
 router.post("/updateDiary",(req,res)=>{
+  let diaryDB = require('../../../../db/blogDb/diary');
   let {txt ,color ,id} = req.body;
   if (!id || !txt || !color) {
     res.send({
@@ -101,6 +105,7 @@ router.post("/updateDiary",(req,res)=>{
 
 /*添加时间轴*/
 router.post("/createDiary",(req,res)=>{
+  let diaryDB = require('../../../../db/blogDb/diary');
   let {txt ,img ,color} = req.body;
   if (!txt) {
     res.send({
