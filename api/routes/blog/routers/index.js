@@ -38,6 +38,11 @@ router.use('/user',require('./user/index'));
 /*上传时间轴图片接口*/
 router.use('/uploadDiaryImg',require('./uploadDiaryImg/index'));
 
-router.use((req, res, next)=>{res.redirect('/blog/#/404')})
+router.use((req, res, next)=>{res.redirect('/#/404')})
+
+// 主页
+router.get('/',(req,res)=>{
+    res.redirect("/blog/index.html")
+})
 
 module.exports = router;
