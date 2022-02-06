@@ -9,6 +9,8 @@ const ejs = require('ejs');
 app.set("view engine","html");
 app.engine('html', ejs.__express);
 
+app.use(express.json({limit : "9100000kb"}));
+
 // CORS & Preflight request
 app.use((req, res, next) => {
     if (req.path !== '/' && !req.path.includes('.')) {
