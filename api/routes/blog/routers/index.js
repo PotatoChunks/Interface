@@ -42,7 +42,7 @@ router.use('/uploadDiaryImg',require('./uploadDiaryImg/index'));
 router.get('/home',(req,res)=>{
 
     res.type('html');
-    res.render(path.join(__dirname,'/public/blog/index.html'));
+    res.render(path.join(__dirname,'../../../../public/blog/index.html'));
 });
 
 // 管理页面
