@@ -5,10 +5,8 @@
 const express = require('express')
 const router = express.Router()
 
-//
-router.get("/book",(req,res)=>{
-    res.send('哦豁')
-})
+// 笔趣阁
+router.use('/biqu',require('./biqudu/biqudu'))
 
 
 module.exports = router
