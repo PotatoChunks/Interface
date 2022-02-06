@@ -4,6 +4,10 @@ const express = require('express')
 
 const app = express()
 
+const ejs = require('ejs');
+
+app.set("view engine","html");
+app.engine('html', ejs.__express);
 
 // CORS & Preflight request
 app.use((req, res, next) => {
