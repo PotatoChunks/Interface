@@ -44,7 +44,7 @@ router.use((req, res, next)=>{res.redirect('/blog/#/404')})
 // 主页
 router.get('/',(req,res)=>{
     res.type('html')
-    res.sendFile(path.join(__dirname,'../../../../public/blog/index.html'))
+    res.redirect("/blog/index.html")
 })
 
 module.exports = router;
