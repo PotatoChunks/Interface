@@ -39,7 +39,12 @@ router.use('/user',require('./user/index'));
 /*上传时间轴图片接口*/
 router.use('/uploadDiaryImg',require('./uploadDiaryImg/index'));
 
-router.use((req, res, next)=>{res.redirect('/blog/#/404')})
+// 管理页面
+router.get('/admin',(req,res)=>{
+    res.sendFile(path.join(__dirname,'./html/index.html'))
+})
+
+router.use((req, res, next)=>{res.redirect('/#/404')})
 
 
 
