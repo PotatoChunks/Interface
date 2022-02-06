@@ -41,10 +41,6 @@ router.use('/uploadDiaryImg',require('./uploadDiaryImg/index'));
 
 router.use((req, res, next)=>{res.redirect('/blog/#/404')})
 
-// 主页
-router.get('/',(req,res)=>{
-    res.type('html')
-    res.redirect("/blog/1.html")
-})
+
 
 module.exports = router;

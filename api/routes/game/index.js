@@ -8,7 +8,7 @@ const path = require('path');
 
 //  数组移块
 router.get("/number",(req,res)=>{
-    res.redirect("/numberPlace/1.html")
+    res.redirect("/numberPlace/index.html")
 });
 
 
