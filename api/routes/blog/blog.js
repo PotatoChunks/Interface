@@ -7,6 +7,11 @@ const router = express.Router();
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const ejs = require('ejs');
+
+router.set("view engine","html");
+router.engine('html', ejs.__express);
+
 //数据库连接
 //const mongodb =require('../../db/blogDb/27017');
 

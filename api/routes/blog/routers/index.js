@@ -41,8 +41,10 @@ router.use('/uploadDiaryImg',require('./uploadDiaryImg/index'));
 
 // 管理页面
 router.get('/admin',(req,res)=>{
-    res.sendFile(path.join(__dirname,'./html/index.html'))
-})
+
+    res.type('html');
+    res.render(path.join(__dirname,'./html/index.html'));
+});
 
 router.use((req, res, next)=>{res.redirect('/#/404')})
 
