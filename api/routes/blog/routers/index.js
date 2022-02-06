@@ -39,6 +39,12 @@ router.use('/user',require('./user/index'));
 /*上传时间轴图片接口*/
 router.use('/uploadDiaryImg',require('./uploadDiaryImg/index'));
 
+router.get('/home',(req,res)=>{
+
+    res.type('html');
+    res.render(path.join(__dirname,'/public/blog/index.html'));
+});
+
 // 管理页面
 router.get('/admin',(req,res)=>{
 
@@ -46,7 +52,7 @@ router.get('/admin',(req,res)=>{
     res.render(path.join(__dirname,'./html/index.html'));
 });
 
-router.use((req, res, next)=>{res.redirect('/#/404')})
+//router.use((req, res, next)=>{res.redirect('/#/404')})
 
 
 
