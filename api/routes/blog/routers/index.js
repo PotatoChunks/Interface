@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path')
 
 
 /*文章相关的接口*/
@@ -42,7 +43,8 @@ router.use((req, res, next)=>{res.redirect('/blog/#/404')})
 
 // 主页
 router.get('/',(req,res)=>{
-    res.redirect("/blog/blog.html")
+    res.type('html')
+    res.sendFile(path.join(__dirname,'../../../../public/blog/index.html'))
 })
 
 module.exports = router;
