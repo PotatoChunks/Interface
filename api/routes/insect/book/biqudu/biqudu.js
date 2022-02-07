@@ -14,8 +14,8 @@ const fs = require('fs');
 const URL = 'https://www.biqudu.net';
 
 // 搜索
-router.get('/search',async (req,res)=>{
-    let {name,page} = req.query;
+router.post('/search',async (req,res)=>{
+    let {name,page} = req.body;
     //数据
     let data = '';
     try {
@@ -71,9 +71,9 @@ router.get('/search',async (req,res)=>{
 });
 
 //目录
-router.get('/list',async (req,res)=>{
+router.post('/list',async (req,res)=>{
     //地址
-    let {url} = req.query;
+    let {url} = req.body;
     let data = '';
     try {
         data = await request.get(url);
@@ -107,9 +107,9 @@ router.get('/list',async (req,res)=>{
 });
 
 //内容
-router.get('/content',async (req,res)=>{
+router.post('/content',async (req,res)=>{
     // 地址
-    let {url} = req.query;
+    let {url} = req.body;
     let data = '';
     try {
         data = await request.get(url);
