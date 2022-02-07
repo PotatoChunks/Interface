@@ -131,7 +131,9 @@ router.get('/content',async (req,res)=>{
     res.send({
         code:0,
         msg:"成功",
-        data:contentHtml
+        data:contentHtml,
+        pre:URL + $('.bottem2>.pre').attr('href'),// 上一章
+        next:URL + $('.bottem2>.next').attr('href')// 下一章
     })
 });
 
