@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- html头添加这段代码 表示请求头的不发送referrer -->
+    <meta name="referrer" content="never">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.12/lib/index.css" />
+    <title>book</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-color: #F5E9D2;
+        }
+
+        [v-cloak] {
+            display: none
+        }
+
+        .search {
+            display: flex;
+            width: 60vw;
+            margin: 5vh auto 0;
+        }
+
+        .input {
+            width: 80%;
+        }
+
+        .van-dropdown-menu {
+            width: 20%;
+            padding-bottom: 5vh;
+        }
+
+        .bookList {
+            padding: 0 5vw 0;
+            margin: 0 auto;
+        }
+
+        .van-col {
+            padding: 9vh 8vw 0;
+            height: 45vh;
+        }
+
+        .book {
+            box-shadow: 0.2rem 0.2rem 0.4rem #c8d0e7, -0.2rem -0.2rem 0.4rem #fff;
+            /* background: url('https://bqgxs.cdn.bcebos.com/web/images/nopic.gif') no-repeat center/cover; */
+        }
+
+
+        .text {
+            width: 100%;
+            background-color: rgb(0, 132, 255);
+            font-size: 1.15em;
+            text-align: center;
+        }
+
+        .wrapper .van-loading {
+            position: fixed;
+            top: 50vh;
+            left: 49vw;
+            width: 30vw;
+            height: 30vw;
+        }
+
+        .bookMsg {
+            padding: 5vw 2vw 0;
+        }
+
+        .content {
+            width: 90vw;
+            height: 90vh;
+            margin: 5vh auto 0;
+            /* background-color: rgb(209, 190, 21); */
+        }
+
+        .content>.txt {
+            text-align: left;
+            font-size: 1.25em;
+        }
+
+        .content>.bottom {
+            display: flex;
+            justify-content: center;
+        }
+        .bottom>.van-button{
+            margin: 0 5vw 0;
+        }
+        .van-list{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app" v-cloak>
+    <div class="serchPag" v-show="!showContent">
+        <!-- 搜索 -->
+        <div class="search">
+            <div class="input">
+                <van-search v-model="value" :clearable='false' show-action placeholder="请输入搜索关键词">
+                    <template #action>
+                        <van-popover v-model="showPopover" trigger="click" :actions="actions" @select="onSelect">
+                            <template #reference>
+                                <van-button type="primary">搜索</van-button>
+                            </template>
+                        </van-popover>
+                    </template>
+                </van-search>
+            </div>
+        </div>
+        <!-- 内容展示 -->
+        <div class="bookList">
+            <van-row>
+                <van-col span="8" v-for="item in bookList" :v-bind="item.id">
+                    <div class="book" @click="clickBook(item)">
+                        <van-image :src="item.img" height="100%" width="100%" fit="contain" position="center">
+                            <template v-slot:loading>
+                                <van-loading type="spinner" size="20" />
+                            </template>
+                        </van-image>
+                        <div class="text">
+                            {{item.title}}
+                        </div>
+                    </div>
+                </van-col>
+            </van-row>
+        </div>
+    </div>
+    <!-- 内容 -->
+    <div class="content" v-show="showContent">
+        <!-- <div class="content-title">{{content.title}}</div> -->
+        <div class="txt" v-html="content.data">
+
+        </div>
+        <div class="bottom">
+            <van-button type="primary" @click="getPre">上一章</van-button>
+            <van-button type="primary" @click="getList">目录</van-button>
+            <van-button type="primary" @click="getNext">下一章</van-button>
+        </div>
+    </div>
+
+    <!-- 加载 -->
+    <van-overlay :show="show" @click="show = false" z-index="9999999">
+        <div class="wrapper" @click.stop>
+            <van-loading />
+        </div>
+    </van-overlay>
+
+    <!-- 书本展示信息 -->
+    <van-popup v-model:show="bookMsgShow" position="bottom" closeable round :style="{ height: '30%' }">
+        <div class="bookMsg">
+            <van-card :desc="bookMsg.describe" :title="bookMsg.title" :thumb="bookMsg.img">
+                <template #tags>
+                    <van-tag plain type="danger">{{bookMsg.update}}</van-tag>
+                </template>
+                <template #footer>
+                    <van-button size="normal" @click="readBook(bookMsg.url)">点击开始阅读</van-button>
+                </template>
+            </van-card>
+        </div>
+    </van-popup>
+
+    <!-- 目录 -->
+    <van-list
+            v-show="listShow"
+            finished-text="没有更多了"
+    >
+        <van-cell v-for="item in listMsg" :key="item.title" :title="item.title" @click="getListContent(item)"/>
+    </van-list>
+    <!-- <van-overlay :show="listShow" @click="show = false">
+        <div class="wrapper" @click.stop style="width: 10vw;min-height: 10vh;margin: 0 auto 0;">
+          <div class="list">
+              <ul>
+                  <li v-for="item in listMsg" @click="getListContent(item)">{{item.title}}</li>
+              </ul>
+          </div>
+        </div>
+      </van-overlay> -->
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
+<script>
+    const app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                value: '',
+                showPopover: false,
+                actions: [{ text: '笔趣阁' }],
+                // 请求地址
+                urlArr: ['https://api-tawny-zeta.vercel.app/insect/book/biqu/'],
+                bookList: [],
+                //加载状态
+                show: false,
+                //书的详细信息展示
+                bookMsgShow: false,
+                // 单本书的详细信息
+                bookMsg: {},
+                // 请求地址
+                reqUrl: '',
+                // 内容
+                content: {},
+                // 内容展示
+                showContent: false,
+                // 目录展示
+                listShow:false,
+                listMsg:[]
+            }
+        },
+        methods: {
+            // 搜索
+            onSelect(action) {
+                // 搜索内容不能为空
+                if (!this.value) {
+                    vant.Toast('搜索内容不能为空');
+                    return
+                }
+                //请求地址
+                let url = this.urlArr[this.actions.indexOf(action)];
+                this.reqUrl = url
+                this.getBooks(url, { name: this.value, page: 1 })
+            },
+            // 请求书名
+            async getBooks(url, option) {
+                this.isShow(true)
+                //
+                let data;
+                try {
+                    data = await axios.post(url + 'search/', option);
+                } catch (err) {
+                    vant.Notify("服务器繁忙请稍后访问")
+                    this.isShow()
+                    return
+                }
+                data = data.data;
+                //console.log(data);
+                if (data.code) {
+                    vant.Notify("服务器繁忙请稍后访问")
+                    this.isShow()
+                    return
+                }
+                if (!data.data.length) {
+                    vant.Toast('目前没有你想要的');
+                    this.isShow()
+                    return
+                }
+                this.isShow()
+
+                this.bookList = data.data
+            },
+            // 加载展示或取消函数
+            isShow(log = false) {
+                this.show = log;
+            },
+            // 点击书
+            clickBook(book) {
+                this.bookMsgShow = true;
+                this.bookMsg = book;
+                //console.log(book);
+            },
+            // 点击开始阅读
+            async readBook(url) {
+                this.bookMsgShow = false
+                // 请求目录
+                // 目录地址
+                //console.log(url);
+                this.isShow(true);
+                let data = ''
+                try {
+                    data = await axios.post(this.reqUrl + "list/", { url });
+                } catch (err) {
+                    vant.Notify("服务器繁忙请稍后访问")
+                    this.isShow();
+                    return
+                }
+                data = data.data;
+                if (data.code) {
+                    this.isShow()
+                    vant.Notify("服务器繁忙请稍后访问")
+                    return
+                }
+                // 请求内容
+                // 内容地址
+                url = data.data[0].href
+                this.getContent(url);
+            },
+            // 获取上一章
+            async getPre() {
+                this.isShow(true)
+                if (!this.content.pre) {
+                    vant.Notify("服务器繁忙请稍后访问")
+                    return
+                }
+                this.getContent(this.content.pre)
+            },
+            // 获取下一章
+            getNext() {
+                this.isShow(true)
+                if (!this.content.next) {
+                    vant.Notify("服务器繁忙请稍后访问")
+                    return
+                }
+                this.getContent(this.content.next)
+            },
+            // 获取内容
+            async getContent(url) {
+                try {
+                    data = await axios.post(this.reqUrl + 'content/', { url })
+                } catch (err) {
+                    vant.Notify("服务器繁忙请稍后访问")
+                    this.isShow();
+                    return
+                }
+                data = data.data;
+                if (data.code) {
+                    this.isShow()
+                    vant.Notify("服务器繁忙请稍后访问")
+                    return
+                }
+                this.content = data;
+                this.showContent = true;
+                //console.log(data);
+                this.isShow();
+            },
+            // 获取目录
+            async getList(){
+                this.isShow(true)
+                this.listShow = true
+                //console.log(this.bookMsg.url);
+                let url = this.bookMsg.url
+                try {
+                    data = await axios.post(this.reqUrl + 'list/', { url })
+                } catch (err) {
+                    vant.Notify("服务器繁忙请稍后访问")
+                    this.isShow();
+                    this.listShow = false
+                    return
+                }
+                data = data.data;
+                if (data.code) {
+                    this.isShow()
+                    vant.Notify("服务器繁忙请稍后访问")
+                    this.listShow = false
+                    return
+                }
+                this.listMsg = data.data
+                this.isShow(false)
+            },
+            // 目录获取内容
+            getListContent(msg){
+                console.log(msg);
+                this.getContent(msg.href);
+                document.title = msg.title || this.bookMsg.title;
+                this.listShow = false
+            }
+        },
+        mounted() {
+            //
+        }
+    })
+</script>
+</body>
+
+</html>
