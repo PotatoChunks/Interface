@@ -65,7 +65,7 @@
                     img:{
                         imgArr:[],
                         imgIndex:0,
-                        img:'https://w.wallhaven.cc/full/3z/wallhaven-3zgz2y.png',
+                        img:'https://api.lolicon.app/assets/img/lx.jpg',
                         getImgT:null,
                         ImgTIndex:0,
                         loadImgArr:[]
@@ -88,7 +88,8 @@
                         return
                     }
                     this.img.loadImgArr = data
-                    this.img.imgArr.push(...data)
+                    //this.img.imgArr.push(...data)
+                    this.img.img = this.img.loadImgArr[this.img.imgIndex];
                     // 检测图片是否有效
                     //this.loadImg(data);
                 },
@@ -102,7 +103,7 @@
                 },
                 upImg(){
                     // 上一张
-                    if(this.img.imgIndex == 0){
+                    if(this.img.imgIndex === 0){
                         vant.Toast.fail('已经是第一张');
                         return
                     }
@@ -119,6 +120,7 @@
                     this.img.img = this.img.imgArr[this.img.imgIndex];
                 },
                 async loadImg(src){
+                    this.img.imgArr.push(src)
                     let p=new Promise(function(resolve,reject){
                         let img=new Image();
                         img.addEventListener("load",_=>{});
@@ -130,11 +132,11 @@
                         document.body.appendChild(img)
                     })
                     return p
-                    //this.img.img = this.img.imgArr[this.img.imgIndex]
                 }
             },
             mounted(){
                 this.getImg();
+                //this.img.imgArr.push(...this.img.loadImgArr)
                 let src = ''
                 this.img.getImgT = setInterval(async _=>{
                     if(this.img.ImgTIndex === this.img.loadImgArr.length){
@@ -143,8 +145,14 @@
                         this.img.loadImgArr = []
                         return
                     }
+                    try {
+                        new Image().src = this.img.loadImgArr[this.img.ImgTIndex++]
+                    }catch (e) {
+                        src = ''
+                        return
+                    }
                     //try {
-                        src = await this.loadImg(this.img.loadImgArr[this.img.ImgTIndex++])
+                        src = await this.loadImg(this.img.loadImgArr[this.img.ImgTIndex])
                     //} catch (err) {
                     //    src = ''
                     //}
