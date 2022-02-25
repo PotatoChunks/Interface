@@ -10,15 +10,20 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <title>图片</title>
     <style>
-        [v-cloak]{display:none}
+        [v-cloak] {
+            display: none
+        }
+
         .el-scrollbar__wrap {
             overflow-x: hidden;
         }
+
         .content {
             height: 95vh;
             padding-top: 2%;
         }
-        .bot{
+
+        .bot {
             position: fixed;
             bottom: 20%;
             right: 5%;
@@ -29,138 +34,131 @@
 </head>
 
 <body>
-    <div id="app" v-cloak>
-        <div class="content">
-            <el-scrollbar style="height:100%">
-                <van-row>
-                    <van-col span="15" offset="5">
-                        <van-image fit="contain" :src="img.img" />
-                    </van-col>
-                </van-row>
-            </el-scrollbar>
-        </div>
-        <div class="button">
-            <van-row type="flex" justify="space-between" class="bot">
-                <van-col>
-                    <van-button icon="replay" type="primary" @click='reload'/>
-                </van-col>
-                <van-col>
-                    <van-button icon="arrow-up" type="primary" @click='upImg'/>
-                </van-col>
-                <van-col>
-                    <van-button icon="arrow-down" type="primary" @click='downImg'/>
+<div id="app" v-cloak>
+    <div class="content">
+        <el-scrollbar style="height:100%">
+            <van-row>
+                <van-col span="15" offset="5">
+                    <van-image fit="contain" :src="img.img" />
                 </van-col>
             </van-row>
-        </div>
+        </el-scrollbar>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.24.0/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-    <script>
-        const app = new Vue({
-            el: '#app',
-            data() {
-                return {
-                    img:{
-                        imgArr:[],
-                        imgIndex:0,
-                        img:'https://api.lolicon.app/assets/img/lx.jpg',
-                        getImgT:null,
-                        ImgTIndex:0,
-                        loadImgArr:[]
-                    }
+    <div class="button">
+        <van-row type="flex" justify="space-between" class="bot">
+            <van-col>
+                <van-button icon="replay" type="primary" @click='reload' />
+            </van-col>
+            <van-col>
+                <van-button icon="arrow-up" type="primary" @click='upImg' />
+            </van-col>
+            <van-col>
+                <van-button icon="arrow-down" type="primary" @click='downImg' />
+            </van-col>
+        </van-row>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.24.0/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vant@2.12/lib/vant.min.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    const app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                img: {
+                    imgArr: [],
+                    imgIndex: 0,
+                    img: 'https://api.lolicon.app/assets/img/lx.jpg',
+                    getImgT: null,
+                    ImgTIndex: 0,
+                    loadImgArr: []
                 }
-            },
-            methods:{
-                async getImg(num=10){
-                    // 获取
-                    let data;
-                    try {
-                        data = await axios.get("https://api-tawny-zeta.vercel.app/insect/meitu/91mm/",{params:{num}})
-                    } catch (err) {
-                        vant.Toast.fail('网络异常');
-                        return
-                    }
-                    data = data.data;
-                    if(data.length === 0){
-                        vant.Toast.fail('网络异常');
-                        return
-                    }
-                    this.img.loadImgArr = data
-                    //this.img.imgArr.push(...data)
-                    this.img.img = this.img.loadImgArr[this.img.imgIndex];
-                    // 检测图片是否有效
-                    //this.loadImg(data);
-                },
-                reload(){
-                    // 重新请求
-                    this.img.imgArr = [];
-                    this.img.loadImgArr = []
-                    this.img.ImgTIndex = 0
-                    this.img.imgIndex = 0;
-                    this.getImg(5);
-                },
-                upImg(){
-                    // 上一张
-                    if(this.img.imgIndex === 0){
-                        vant.Toast.fail('已经是第一张');
-                        return
-                    }
-                    this.img.imgIndex--;
-                    this.img.img = this.img.imgArr[this.img.imgIndex];
-                },
-                downImg(){
-                    // 下一张
-                    if(this.img.imgIndex === this.img.imgArr.length){
-                        this.getImg(20);
-                        return
-                    }
-                    this.img.imgIndex++;
-                    this.img.img = this.img.imgArr[this.img.imgIndex];
-                },
-                async loadImg(src){
-                    this.img.imgArr.push(src)
-                    let p=new Promise(function(resolve,reject){
-                        let img=new Image();
-                        img.addEventListener("load",_=>{});
-                        img.src=src;
-                        img.style.position = 'fixed';
-                        img.style.top = '-999999vh';
-                        img.style.left = '-999999vw';
-                        img.style.zIndex = '-9999999';
-                        document.body.appendChild(img)
-                    })
-                    return p
-                }
-            },
-            mounted(){
-                this.getImg();
-                //this.img.imgArr.push(...this.img.loadImgArr)
-                let src = ''
-                this.img.getImgT = setInterval(async _=>{
-                    if(this.img.ImgTIndex === this.img.loadImgArr.length){
-                        this.getImg();
-                        this.img.ImgTIndex = 0
-                        this.img.loadImgArr = []
-                        return
-                    }
-                    try {
-                        new Image().src = this.img.loadImgArr[this.img.ImgTIndex++]
-                    }catch (e) {
-                        src = ''
-                        return
-                    }
-                    //try {
-                        src = await this.loadImg(this.img.loadImgArr[this.img.ImgTIndex])
-                    //} catch (err) {
-                    //    src = ''
-                    //}
-                    //if(!src) return;
-                },2000)
             }
-        })
-    </script>
+        },
+        methods: {
+            async getImg(num = 10) {
+                // 获取
+                let data;
+                try {
+                    data = await axios.get("https://api-tawny-zeta.vercel.app/insect/meitu/91mm/", { params: { num } })
+                } catch (err) {
+                    vant.Toast.fail('网络异常');
+                    return
+                }
+                data = data.data;
+                if (data.length === 0) {
+                    vant.Toast.fail('网络异常');
+                    return
+                }
+                this.img.loadImgArr.push(data)
+                //this.img.imgArr.push(...data)
+                // 检测图片是否有效
+                //this.loadImg(data);
+            },
+            reload() {
+                // 重新请求
+                this.img.imgArr = [];
+                this.img.loadImgArr = []
+                this.img.ImgTIndex = 0
+                this.img.imgIndex = 0;
+                this.getImg(5);
+            },
+            upImg() {
+                // 上一张
+                if (this.img.imgIndex === 0) {
+                    vant.Toast.fail('已经是第一张');
+                    return
+                }
+                this.img.imgIndex--;
+                this.img.img = this.img.imgArr[this.img.imgIndex];
+            },
+            downImg() {
+                // 下一张
+                if (this.img.imgIndex === this.img.imgArr.length) {
+                    this.getImg(20);
+                    return
+                }
+                this.img.imgIndex++;
+                this.img.img = this.img.imgArr[this.img.imgIndex];
+            },
+            async loadImg(src) {
+                this.img.imgArr.push(src)
+                let p = new Promise(function (resolve, reject) {
+                    let img = new Image();
+                    img.addEventListener("load", _ => { });
+                    img.src = src;
+                    img.style.position = 'fixed';
+                    img.style.top = '-999999vh';
+                    img.style.left = '-999999vw';
+                    img.style.zIndex = '-9999999';
+                    document.body.appendChild(img)
+                })
+                return p
+            }
+        },
+        mounted() {
+            this.getImg();
+            this.img.img = this.img.imgArr[this.img.imgIndex]
+            let src = ''
+            this.img.getImgT = setInterval(async _ => {
+                if (this.img.ImgTIndex === this.img.loadImgArr.length) {
+                    this.getImg();
+                    this.img.ImgTIndex = 0
+                    this.img.loadImgArr = []
+                    return
+                }
+                try {
+                    new Image().src = this.img.loadImgArr[this.img.ImgTIndex++]
+                } catch (e) {
+                    return
+                }
+                await this.loadImg(this.img.loadImgArr[this.img.ImgTIndex])
+            }, 1000)
+        }
+    })
+</script>
 </body>
 
 </html>
