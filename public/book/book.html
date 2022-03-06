@@ -1,187 +1,134 @@
 <!DOCTYPE html>
 <html lang="zh">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- html头添加这段代码 表示请求头的不发送referrer -->
     <meta name="referrer" content="never">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.12/lib/index.css" />
-    <title>book</title>
+    <title>图书</title>
     <style>
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background-color: #F5E9D2;
-        }
-
         [v-cloak] {
             display: none
         }
 
-        .search {
-            display: flex;
-            width: 60vw;
-            margin: 5vh auto 0;
-        }
-
-        .input {
-            width: 80%;
-        }
-
-        .van-dropdown-menu {
-            width: 20%;
-            padding-bottom: 5vh;
-        }
-
-        .bookList {
-            padding: 0 5vw 0;
-            margin: 0 auto;
-        }
-
-        .van-col {
-            padding: 9vh 8vw 0;
-            height: 45vh;
-        }
-
-        .book {
-            box-shadow: 0.2rem 0.2rem 0.4rem #c8d0e7, -0.2rem -0.2rem 0.4rem #fff;
-            /* background: url('https://bqgxs.cdn.bcebos.com/web/images/nopic.gif') no-repeat center/cover; */
-        }
-
-
-        .text {
-            width: 100%;
-            background-color: rgb(0, 132, 255);
-            font-size: 1.15em;
+        .title {
+            padding-top: 5vh;
+            font-size: 1.75em;
             text-align: center;
         }
 
-        .wrapper .van-loading {
+        .book-list {
+            padding: 20px;
+        }
+
+        .book-list .book-title {
+            position: absolute;
+            bottom: 20px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 90%;
+            text-align: center;
+            color: white;
+            background-color: #bfbfbf;
+            font-size: 0.85em;
+        }
+
+        .book-con .home {
             position: fixed;
-            top: 50vh;
-            left: 49vw;
-            width: 30vw;
-            height: 30vw;
-        }
-
-        .bookMsg {
-            padding: 5vw 2vw 0;
-        }
-
-        .content {
-            width: 90vw;
-            height: 90vh;
-            margin: 5vh auto 0;
-            /* background-color: rgb(209, 190, 21); */
-        }
-
-        .content>.txt {
-            text-align: left;
-            font-size: 1.25em;
-        }
-
-        .content>.bottom {
-            display: flex;
-            justify-content: center;
-        }
-        .bottom>.van-button{
-            margin: 0 5vw 0;
-        }
-        .van-list{
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
+            bottom: 10vh;
+            right: 5vw;
         }
     </style>
 </head>
-
 <body>
 <div id="app" v-cloak>
-    <div class="serchPag" v-show="!showContent">
-        <!-- 搜索 -->
-        <div class="search">
-            <div class="input">
-                <van-search v-model="value" :clearable='false' show-action placeholder="请输入搜索关键词">
-                    <template #action>
-                        <van-popover v-model="showPopover" trigger="click" :actions="actions" @select="onSelect">
-                            <template #reference>
-                                <van-button type="primary">搜索</van-button>
-                            </template>
-                        </van-popover>
-                    </template>
-                </van-search>
-            </div>
-        </div>
-        <!-- 内容展示 -->
-        <div class="bookList">
+    <div class="book-search" v-show="!content.contentShow">
+        <!-- 标题 -->
+        <div class="title">
             <van-row>
-                <van-col span="8" v-for="item in bookList" :v-bind="item.id">
-                    <div class="book" @click="clickBook(item)">
-                        <van-image :src="item.img" height="100%" width="100%" fit="contain" position="center">
-                            <template v-slot:loading>
-                                <van-loading type="spinner" size="20" />
-                            </template>
-                        </van-image>
-                        <div class="text">
-                            {{item.title}}
-                        </div>
-                    </div>
+                <van-col span="15" offset="5">标题</van-col>
+            </van-row>
+            <van-row>
+                <!-- 搜索内容 -->
+                <van-col span="15" offset="5">
+                    <van-field v-model="search.name" center clearable placeholder="请输入内容">
+                        <template #button>
+                            <van-button size="small" type="primary" :loading='search.buttonDisable'
+                                        @click='searchValue' loading-text="加载中...">搜索书籍</van-button>
+                        </template>
+                    </van-field>
                 </van-col>
             </van-row>
         </div>
+        <!-- 图书展示 -->
+        <div class="book-list">
+            <!-- 书籍展示 -->
+            <van-row type='flex' gutter="20" justify="space-between">
+                <van-col style='height:25vh;position: relative;cursor: pointer;' span='8'
+                         v-for="(item,index) in search.data" :key='item.href' @click='clickBook(item)'>
+                    <!-- 图片 -->
+                    <van-image height='20vh' style='width: 100%;margin: 0 auto 0;' fit="contain"
+                               :src="item.img">
+                        <template v-slot:error>
+                            <van-image src='https://www.xbiquge.la/modules/article/images/nocover.jpg'>
+                            </van-image>
+                        </template>
+                    </van-image>
+                    <!-- 书名 -->
+                    <div class="book-title">{{item.title}}</div>
+                </van-col>
+            </van-row>
+            <!-- 详细信息 -->
+            <van-popup v-model="search.bookMesShow" position="bottom" round style='height: 50%; '>
+                <van-card :title="'《' + search.bookMes.title + '》'" price="" currency=''
+                          :thumb="search.bookMes.img" style='padding: 20px;'>
+                    <template #tags>
+                        {{search.bookMes.describe}}
+                    </template>
+                    <!-- 最新章节 -->
+                    <template #price-top>
+                        {{search.bookMes.update}}
+                    </template>
+                    <!-- 作者 -->
+                    <template #bottom>
+                        <br>
+                        {{search.bookMes.author}}
+                    </template>
+                    <!-- 第一章和目录 -->
+                    <template #footer>
+                        <van-button size="small" @click='readBook'>开始阅读</van-button>
+                        <van-button size="small" @click='catalogueBook'>目录</van-button>
+                    </template>
+                </van-card>
+            </van-popup>
+        </div>
     </div>
-    <!-- 内容 -->
-    <div class="content" v-show="showContent">
-        <!-- <div class="content-title">{{content.title}}</div> -->
-        <div class="txt" v-html="content.data">
-
-        </div>
-        <div class="bottom">
-            <van-button type="primary" @click="getPre">上一章</van-button>
-            <van-button type="primary" @click="getList">目录</van-button>
-            <van-button type="primary" @click="getNext">下一章</van-button>
-        </div>
-    </div>
-
-    <!-- 加载 -->
-    <van-overlay :show="show" @click="show = false" z-index="9999999">
-        <div class="wrapper" @click.stop>
-            <van-loading />
-        </div>
-    </van-overlay>
-
-    <!-- 书本展示信息 -->
-    <van-popup v-model:show="bookMsgShow" position="bottom" closeable round :style="{ height: '30%' }">
-        <div class="bookMsg">
-            <van-card :desc="bookMsg.describe" :title="bookMsg.title" :thumb="bookMsg.img">
-                <template #tags>
-                    <van-tag plain type="danger">{{bookMsg.update}}</van-tag>
-                </template>
-                <template #footer>
-                    <van-button size="normal" @click="readBook(bookMsg.url)">点击开始阅读</van-button>
-                </template>
-            </van-card>
-        </div>
-    </van-popup>
-
     <!-- 目录 -->
-    <van-list
-            v-show="listShow"
-            finished-text="没有更多了"
-    >
-        <van-cell v-for="item in listMsg" :key="item.title" :title="item.title" @click="getListContent(item)"/>
-    </van-list>
-    <!-- <van-overlay :show="listShow" @click="show = false">
-        <div class="wrapper" @click.stop style="width: 10vw;min-height: 10vh;margin: 0 auto 0;">
-          <div class="list">
-              <ul>
-                  <li v-for="item in listMsg" @click="getListContent(item)">{{item.title}}</li>
-              </ul>
-          </div>
+    <van-popup v-model='catalogue.catalogueShow' round position='bottom' @closed='contentsClosed'
+               style='height: 40%;'>
+        <van-list v-model='catalogue.loading' :finished='catalogue.finished' finished-text="没有更多了">
+            <van-cell v-for="(item,index) in catalogue.contentsArr" :key="item.href" :title="item.title"
+                      @click='clickContents(item,index)' />
+        </van-list>
+    </van-popup>
+    <!-- 内容展示 -->
+    <div class="book-con" style="padding: 50px;" v-show="content.contentShow">
+        <div class="book-con-html" v-html="content.html"></div>
+        <div class="botton" style='padding: 20px 20px;'>
+            <van-row type='flex' justify='center'>
+                <van-col>
+                    <van-button type="info" @click='upPage'>上一章</van-button>
+                    <van-button type="info" @click='contentCatalogue'>目录</van-button>
+                    <van-button type="info" @click='downPage'>下一章</van-button>
+                </van-col>
+            </van-row>
         </div>
-      </van-overlay> -->
+        <div class="home">
+            <van-button icon="plus" type="primary" @click='toHome' />
+        </div>
+    </div>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -191,181 +138,410 @@
         el: '#app',
         data() {
             return {
-                value: '',
-                showPopover: false,
-                actions: [{ text: '笔趣阁' }],
-                // 请求地址
-                urlArr: ['https://api-tawny-zeta.vercel.app/insect/book/biqu/'],
-                bookList: [],
-                //加载状态
-                show: false,
-                //书的详细信息展示
-                bookMsgShow: false,
-                // 单本书的详细信息
-                bookMsg: {},
-                // 请求地址
-                reqUrl: '',
+                // 搜索
+                search: {
+                    // 搜索地址
+                    searchUrl: ['https://api-tawny-zeta.vercel.app/insect/book/biqu/'],
+                    // 搜索内容
+                    name: '',
+                    //搜索框禁用状态
+                    buttonDisable: false,
+                    // 搜索结果
+                    data: [],
+                    //单个信息
+                    bookMes: {
+                        // title: '书名',
+                        // img: 'https://www.xbiquge.la/modules/article/images/nocover.jpg',
+                        // update:'最新章节',
+                        // author:'作者',
+                        // describe:'简介'
+                    },
+                    //单个信息展示状态
+                    bookMesShow: false
+                },
+                // 目录
+                catalogue: {
+                    // 展示状态
+                    catalogueShow: false,
+                    contentsArr: [
+                        // {title:'标题'},
+                        // {title:'123'}
+                    ],
+                    // 加载状态 true为一直加载
+                    loading: false,
+                    // 是否加载完毕
+                    finished: false
+                },
                 // 内容
-                content: {},
-                // 内容展示
-                showContent: false,
-                // 目录展示
-                listShow:false,
-                listMsg:[]
+                content: {
+                    // 显示状态
+                    contentShow: false,
+                    html: '正在加载...',
+                    contentArr: [],
+                    contentIndex: 0,
+                    booksMsg: {}
+                },
+                // 缓存信息
+                localStorage: null,
+                // 定时器
+                bookTime: null
             }
         },
         methods: {
-            // 搜索
-            onSelect(action) {
-                // 搜索内容不能为空
-                if (!this.value) {
-                    vant.Toast('搜索内容不能为空');
+            searchValue() {
+                //搜索
+                //内容是否为空
+                if (!this.search.name.trim()) {
+                    vant.Toast.fail('请输入内容');
+                    this.search.name = '';
                     return
                 }
-                //请求地址
-                let url = this.urlArr[this.actions.indexOf(action)];
-                this.reqUrl = url
-                this.getBooks(url, { name: this.value, page: 1 })
+                //按钮禁用
+                this.search.buttonDisable = true;
+                this.searchBiQuGe({
+                    name: this.search.name,
+                    page: 1
+                }).then(d => {
+                    this.search.data = d;
+                    //解除禁用
+                    this.search.buttonDisable = false;
+                })
             },
-            // 请求书名
-            async getBooks(url, option) {
-                this.isShow(true)
-                //
-                let data;
-                try {
-                    data = await axios.post(url + 'search/', option);
-                } catch (err) {
-                    vant.Notify("服务器繁忙请稍后访问")
-                    this.isShow()
-                    return
-                }
-                data = data.data;
-                //console.log(data);
-                if (data.code) {
-                    vant.Notify("服务器繁忙请稍后访问")
-                    this.isShow()
-                    return
-                }
-                if (!data.data.length) {
-                    vant.Toast('目前没有你想要的');
-                    this.isShow()
-                    return
-                }
-                this.isShow()
-
-                this.bookList = data.data
-            },
-            // 加载展示或取消函数
-            isShow(log = false) {
-                this.show = log;
-            },
-            // 点击书
-            clickBook(book) {
-                this.bookMsgShow = true;
-                this.bookMsg = book;
-                //console.log(book);
+            //点击一本书
+            clickBook(item) {
+                this.search.bookMesShow = true
+                this.search.bookMes = item
             },
             // 点击开始阅读
-            async readBook(url) {
-                this.bookMsgShow = false
-                // 请求目录
-                // 目录地址
-                //console.log(url);
-                this.isShow(true);
-                let data = ''
-                try {
-                    data = await axios.post(this.reqUrl + "list/", { url });
-                } catch (err) {
-                    vant.Notify("服务器繁忙请稍后访问")
-                    this.isShow();
-                    return
+            async readBook() {
+                window.scrollTo(0, 0)
+                this.content.contentShow = true
+                this.content.html = '正在加载.....'
+                // 缓存中是否存在
+                this.getLocalStorageCon()
+                if (this.localStorage) {
+                    this.localStorage.forEach(i => {
+                        if (i.bookMsg.url === this.search.bookMes.url && i.index) {
+                            this.catalogue.contentsArr = i.bookContent
+                            this.content.html = i.msg[i.index]
+                        }
+                    })
                 }
-                data = data.data;
-                if (data.code) {
-                    this.isShow()
-                    vant.Notify("服务器繁忙请稍后访问")
-                    return
+                // 获取目录
+                let d = await this.getCons()
+                if (!d) return this.content.contentShow = false
+                this.catalogue.contentsArr = d
+                // 获取当前读的下标
+                let index = 0
+                // 如果有缓存读取缓存的下标
+                if (this.localStorage) {
+                    this.localStorage.forEach(i => {
+                        if (i.bookMsg.url === this.search.bookMes.url && i.index) {
+                            index = i.index
+                        }
+                    })
                 }
-                // 请求内容
-                // 内容地址
-                url = data.data[0].href
-                this.getContent(url);
-            },
-            // 获取上一章
-            async getPre() {
-                this.isShow(true)
-                if (!this.content.pre) {
-                    vant.Notify("服务器繁忙请稍后访问")
-                    return
-                }
-                this.getContent(this.content.pre)
-            },
-            // 获取下一章
-            getNext() {
-                this.isShow(true)
-                if (!this.content.next) {
-                    vant.Notify("服务器繁忙请稍后访问")
-                    return
-                }
-                this.getContent(this.content.next)
-            },
-            // 获取内容
-            async getContent(url) {
-                try {
-                    data = await axios.post(this.reqUrl + 'content/', { url })
-                } catch (err) {
-                    vant.Notify("服务器繁忙请稍后访问")
-                    this.isShow();
-                    return
-                }
-                data = data.data;
-                if (data.code) {
-                    this.isShow()
-                    vant.Notify("服务器繁忙请稍后访问")
-                    return
-                }
-                this.content = data;
-                this.showContent = true;
-                //console.log(data);
-                this.isShow();
+                // 获取第一章
+                this.clickContents(this.catalogue.contentsArr[index], index)
             },
             // 获取目录
-            async getList(){
-                this.isShow(true)
-                this.listShow = true
-                //console.log(this.bookMsg.url);
-                let url = this.bookMsg.url
+            async getCons() {
+                let data;
                 try {
-                    data = await axios.post(this.reqUrl + 'list/', { url })
-                } catch (err) {
-                    vant.Notify("服务器繁忙请稍后访问")
-                    this.isShow();
-                    this.listShow = false
+                    data = await axios.post(this.search.searchUrl[0] + 'list/', {
+                        url: this.search.bookMes.url
+                    })
+                } catch (e) {
+                    //TODO handle the exception
+                    vant.Toast.fail("服务器繁忙请稍后访问")
+                    return null
+                }
+                data = data.data
+                if (data.code) {
+                    vant.Toast.fail("服务器繁忙请稍后访问")
+                    return null
+                }
+                if (this.localStorage) {
+                    this.localStorage.forEach(d => {
+                        if (d.bookMsg.url === this.search.bookMes.url) {
+                            d.bookContent = data.data
+                        }
+                    })
+                    this.setContentLocal()
+                }
+                return data.data
+            },
+            //点击目录
+            async catalogueBook() {
+                this.catalogue.contentsArr = []
+                // console.log(this.search.bookMes);
+                // 修改状态
+                // this.search.bookMesShow = false;
+                // 显示目录
+                this.catalogue.catalogueShow = true;
+                this.catalogue.finished = false;
+                // 加载
+                this.catalogue.loading = true
+                if (localStorage.books) {
+                    this.contentCatalogue()
+                }
+                let data;
+                try {
+                    data = await axios.post(this.search.searchUrl[0] + 'list/', {
+                        url: this.search.bookMes.url
+                    })
+                } catch (e) {
+                    //TODO handle the exception
+                    vant.Toast.fail("服务器繁忙请稍后访问")
+                    this.catalogue.loading = false
+                    this.catalogue.finished = true
                     return
+                }
+                data = data.data
+                if (data.code) {
+                    vant.Toast.fail("服务器繁忙请稍后访问")
+                    this.catalogue.loading = false
+                    this.catalogue.finished = true
+                    return
+                }
+                this.catalogue.contentsArr = data.data
+                // 加载完成
+                this.catalogue.loading = false
+                this.catalogue.finished = true
+            },
+            // 内容中点击目录
+            contentCatalogue() {
+                this.catalogue.contentsArr = []
+                this.catalogue.catalogueShow = true
+                if (!localStorage.books) {
+                    this.catalogueBook()
+                    return
+                }
+                // 获取缓存中的书籍
+                let books = JSON.parse(localStorage.books);
+                // 循环判断当前的书是否是缓存中存在的
+                let booksBoolean = false
+                books.forEach(item => {
+                    if (item.bookMsg.url === this.search.bookMes.url) {
+                        books = item.bookContent
+                        booksBoolean = true
+                        return
+                    }
+                })
+                // 判断是否有
+                if (booksBoolean) {
+                    this.catalogue.contentsArr = books
+                }
+            },
+            // 点击内容中的上一章
+            upPage() {
+                this.content.html = '加载中...'
+                window.scrollTo(0, 0)
+                if (this.content.booksMsg.index === 0) {
+                    vant.Toast.fail("已经是第一章")
+                    return
+                }
+                // 缓存中有没有内容
+                this.localStorage.forEach(book => {
+                    if ((book.bookMsg.url === this.search.bookMes.url) && book.msg[this.content.booksMsg
+                        .index - 1]) {
+                        this.content.html = book.msg[this.content.booksMsg.index + 1]
+                    }
+                })
+                this.getBookCon(this.catalogue.contentsArr[--this.content.booksMsg.index]).then(d => {
+                    if (d) {
+                        document.title = this.catalogue.contentsArr[this.content.booksMsg.index].title
+                        this.content.html = d
+                        this.localStorage.forEach(inde => {
+                            if (inde.bookMsg.url === this.search.bookMes.url) {
+                                inde.index = this.content.booksMsg.index
+                                inde.msg[inde.index] = d
+                            }
+                        })
+                    }
+                })
+            },
+            // 点击内容中的下一章
+            downPage() {
+                this.content.html = '这本书的内容加载中...................................................'
+                window.scrollTo(0, 0)
+                if (this.content.booksMsg.index - 1 === this.catalogue.contentsArr.length) {
+                    vant.Toast.fail("已经是最后一章")
+                    return
+                }
+                // 缓存中有没有内容
+                this.localStorage.forEach(book => {
+                    if ((book.bookMsg.url === this.search.bookMes.url) && book.msg[this.content.booksMsg
+                        .index + 1]) {
+                        this.content.html = book.msg[this.content.booksMsg.index + 1]
+                    }
+                })
+                this.getBookCon(this.catalogue.contentsArr[++this.content.booksMsg.index]).then(d => {
+                    if (d) {
+                        document.title = this.catalogue.contentsArr[this.content.booksMsg.index].title
+                        this.content.html = d
+                        this.localStorage.forEach(inde => {
+                            if (inde.bookMsg.url === this.search.bookMes.url) {
+                                inde.index = this.content.booksMsg.index
+                                inde.msg[inde.index] = d
+                            }
+                        })
+                    }
+                })
+            },
+            // 书的内容设置到localStorage中
+            setContentLocal() {
+                if (this.localStorage) {
+                    localStorage.setItem('books', JSON.stringify(this.localStorage))
+                }
+            },
+            // 从缓存中获取书的信息
+            getLocalStorageCon() {
+                if (!localStorage.books) {
+                    return
+                }
+                // 转换成对象可能报错
+                try {
+                    this.localStorage = JSON.parse(localStorage.books)
+                } catch (e) {
+                    //TODO handle the exception
+                    localStorage.removeItem('books')
+                    return
+                }
+            },
+            // 关闭目录
+            contentsClosed() {
+                // this.catalogue.contentsArr = []
+            },
+            // 点击目录里的列表
+            async clickContents(item, index) {
+                this.content.html = '正在加载......'
+                // 将当前书存储到浏览器中
+                if (!localStorage.books) {
+                    localStorage.setItem('books', JSON.stringify([]))
+                }
+                let booksObj = {
+                    bookMsg: this.search.bookMes,
+                    bookContent: this.catalogue.contentsArr,
+                    // 第几章
+                    index: index,
+                    msg: []
+                }
+                this.content.booksMsg = booksObj
+                let arr = JSON.parse(localStorage.books);
+                let bookBoo = false;
+                // 判断是否有相同的书
+                arr.forEach(i => {
+                    if (i.bookMsg.url === booksObj.bookMsg.url) {
+                        bookBoo = true
+                        i.index = index
+                    }
+                })
+                // 有一样的不进行添加
+                if (!bookBoo) {
+                    arr.push(booksObj)
+                }
+                // 存储
+                localStorage.setItem('books', JSON.stringify(arr))
+                this.content.contentIndex = index
+                // 修改状态
+                this.catalogue.catalogueShow = false
+                this.search.bookMesShow = false
+                this.content.contentShow = true
+                // console.log(item);
+                document.title = item.title
+                this.getLocalStorageCon()
+                // 如果缓存中存在读取缓存中的内容
+                this.localStorage.forEach(dd => {
+                    if ((dd.bookMsg.url === this.search.bookMes.url) && dd.msg[index]) {
+                        this.content.html = dd.msg[index]
+                    }
+                })
+                this.getBookCon(item).then(d => {
+                    this.content.html = d
+                    this.localStorage.forEach(inde => {
+                        if (inde.bookMsg.url === this.search.bookMes.url) {
+                            inde.index = this.content.booksMsg.index
+                            inde.msg[inde.index] = d
+                        }
+                    })
+                })
+            },
+            // 请求内容
+            async getBookCon(item) {
+                let data;
+                try {
+                    data = await axios.post(this.search.searchUrl[0] + 'content/', {
+                        url: item.href
+                    })
+                } catch (e) {
+                    //TODO handle the exception
+                    vant.Toast.fail("请检查网络连接")
+                    return null
+                }
+                data = data.data
+                if (data.code) {
+                    vant.Toast.fail("请检查网络连接")
+                    return null
+                }
+                this.setContentLocal()
+                return data.data
+            },
+            // 点击主页
+            toHome() {
+                this.content.contentShow = false
+                this.search.data = []
+                if (localStorage.books) {
+                    let data = JSON.parse(localStorage.books)
+                    data.forEach(item => {
+                        this.search.data.push(item.bookMsg)
+                    })
+                }
+                this.content.booksMsg.index = 0
+                this.search.name = ''
+                this.content.html = '正在加载...'
+            },
+            // 笔趣阁
+            async searchBiQuGe(option) {
+                let data;
+                try {
+                    data = await axios.post(this.search.searchUrl[0] + 'search/',
+                        option)
+                } catch (e) {
+                    //TODO handle the exception
+                    vant.Toast.fail("服务器繁忙请稍后访问")
+                    return [];
                 }
                 data = data.data;
                 if (data.code) {
-                    this.isShow()
-                    vant.Notify("服务器繁忙请稍后访问")
-                    this.listShow = false
-                    return
+                    vant.Toast.fail("服务器繁忙请稍后访问")
+                    return [];
                 }
-                this.listMsg = data.data
-                this.isShow(false)
-            },
-            // 目录获取内容
-            getListContent(msg){
-                console.log(msg);
-                this.getContent(msg.href);
-                document.title = msg.title || this.bookMsg.title;
-                this.listShow = false
+                if (!data.data.length) {
+                    vant.Toast.fail('目前没有你想要的');
+                    return [];
+                }
+                return data.data;
             }
         },
         mounted() {
-            //
+            this.getLocalStorageCon()
+            this.toHome()
+            this.bookTime = setInterval(_ => {
+                if (this.search.bookMes.url && this.localStorage && this.content.booksMsg.index && this.catalogue.contentsArr[this.content.contentIndex]) {
+                    this.getBookCon(this.catalogue.contentsArr[this.content.contentIndex++]).then(
+                        content => {
+                            this.localStorage.forEach(inde => {
+                                if (inde.bookMsg.url === this.search.bookMes.url) {
+                                    inde.msg[this.content.contentIndex-1] = content
+                                }
+                            })
+                        })
+                    // console.log(this.catalogue.contentsArr[this.content.contentIndex].href, this.content.contentIndex)
+                }
+            }, 5000)
         }
     })
 </script>
 </body>
-
 </html>

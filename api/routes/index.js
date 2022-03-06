@@ -12,7 +12,7 @@ router.use('/game',require('./game/index'));
 //router.use('/link',require('./link/link'));
 
 // 个人博客
-//router.use('/blog',require('./blog/blog'));
+router.use('/blog',require('./blog/blog'));
 
 // ico图标
 router.get("/favicon.ico",(req,res)=>{
