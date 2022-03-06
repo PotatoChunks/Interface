@@ -12,6 +12,10 @@
             display: none
         }
 
+        body{
+            background-color: #fde4b7;
+        }
+
         .title {
             padding-top: 5vh;
             font-size: 1.75em;
@@ -48,7 +52,7 @@
         <!-- 标题 -->
         <div class="title">
             <van-row>
-                <van-col span="15" offset="5">标题</van-col>
+                <van-col span="15" offset="5">图书搜索器</van-col>
             </van-row>
             <van-row>
                 <!-- 搜索内容 -->
@@ -500,6 +504,7 @@
                 this.content.booksMsg.index = 0
                 this.search.name = ''
                 this.content.html = '正在加载...'
+                document.title = '图书'
             },
             // 笔趣阁
             async searchBiQuGe(option) {
