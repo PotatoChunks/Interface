@@ -8,8 +8,6 @@ router.use("/insect",require('./insect/insect'));
 // 游戏
 router.use('/game',require('./game/index'));
 
-// 链接展示
-//router.use('/link',require('./link/link'));
 
 // 个人博客
 //router.use('/blog',require('./blog/blog'));
