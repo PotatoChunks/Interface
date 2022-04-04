@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const fs = require("fs")
+const path = require('path')
 
 // 爬虫
 router.use("/insect",require('./insect/insect'));
@@ -18,9 +19,22 @@ router.get("/favicon.ico",(req,res)=>{
     res.send()
 });
 
+router.get('/',(req,res)=>{
+    res.send({
+        code:0,
+        msg:'成功',
+        data:[
+            {
+                href:'https://api-potatochunks.vercel.app/book/book.html',
+                title:'小说'
+            }
+        ]
+    })
+})
+
 // 404
 router.get('*',(req,res)=>{
-    res.redirect("/404.html")
+    res.sendFile(path.join(__dirname,'../../public/404.html'))
 })
 
 
