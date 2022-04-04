@@ -34,6 +34,7 @@ router.get('/',(req,res)=>{
 
 // 404
 router.get('*',(req,res)=>{
+    res.header('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname,'../../public/404.html'))
 })
 
