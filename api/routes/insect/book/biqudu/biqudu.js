@@ -74,6 +74,10 @@ router.post('/search',async (req,res)=>{
 router.get('/list',async (req,res)=>{
     //地址
     let {url} = req.query;
+    res.send({
+        url
+    })
+    return
     let data = '';
     try {
         data = await request.get(url);
