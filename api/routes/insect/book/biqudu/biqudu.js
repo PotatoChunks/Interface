@@ -71,9 +71,9 @@ router.post('/search',async (req,res)=>{
 });
 
 //目录
-router.post('/list',async (req,res)=>{
+router.get('/list',async (req,res)=>{
     //地址
-    let {url} = req.body;
+    let {url} = req.query;
     let data = '';
     try {
         data = await request.get(url);
