@@ -5,6 +5,7 @@ const express = require('express')
 const router = express.Router()
 
 const request = require('../../../../../util/request')();
+const got = require('got');
 
 const {JSDOM} = require("jsdom");
 const cheerio = require("cheerio");
@@ -76,7 +77,7 @@ router.get('/list',async (req,res)=>{
     let {url} = req.query;
     let data = '';
     try {
-        data = await request.get(url);
+        data = await got.get(url);
     } catch (error) {
         console.log(error);
         res.send({
@@ -85,6 +86,7 @@ router.get('/list',async (req,res)=>{
         });
         return
     }
+    data = data.body
     // 数据转 DOM
     let {document} = new JSDOM(data).window;
     // 数据转 JQ
