@@ -74,10 +74,6 @@ router.post('/search',async (req,res)=>{
 router.get('/list',async (req,res)=>{
     //地址
     let {url} = req.query;
-    res.send({
-        url
-    })
-    return
     let data = '';
     try {
         data = await request.get(url);
@@ -89,6 +85,10 @@ router.get('/list',async (req,res)=>{
         });
         return
     }
+    res.send({
+        data
+    })
+    return
     // 数据转 DOM
     let {document} = new JSDOM(data).window;
     // 数据转 JQ
