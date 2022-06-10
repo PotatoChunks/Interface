@@ -77,7 +77,15 @@ router.get('/list',async (req,res)=>{
     let {url} = req.query;
     let data = '';
     try {
-        data = await got.get(url);
+        data = await got({
+            url,
+            method:'GET',
+            headers:{
+                "Origin":"https://m.biqudu.net/"
+            },
+            responseType:"buffer",
+            rejectUnauthorized:false
+        });
     } catch (error) {
         console.log(error);
         res.send({
