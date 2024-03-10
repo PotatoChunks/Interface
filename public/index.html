@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>爱你哦</title>
+    <link rel="shortcut icon" href="https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//eec89b26b8e240fc876e8471f3419472.png" type="image/x-icon">
+    <link rel="stylesheet" href="/js/vant2.12.5/css/index.css" />
+    <style>
+        .aiXin {
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            animation: colorChange 5s linear infinite alternate;
+            /*linear:匀速 infinite:循环 反向*/
+        }
+
+        .container {
+            width: 400px;
+            height: 400px;
+            margin: 42vh 45vw auto;
+            /* background-color:blue; */
+        }
+
+        .heart {
+            position: relative;
+            /*相对定位*/
+            width: 200px;
+            height: 200px;
+            /* background-color:red; */
+        }
+
+        .left {
+            transform: rotate(-45deg);
+            /*css3变换:旋转*/
+        }
+
+        .right {
+            transform: translateX(43px) rotate(45deg);
+            /*css3变换:旋转 位移*/
+        }
+
+        .left,
+        .right {
+            position: absolute;
+            /*绝对定位:改变元素位置 默认为浏览器*/
+            top: 0px;
+            /*顶端:距离参考系顶端*/
+            left: 0px;
+            /*左端:距离参考系左端*/
+            width: 100px;
+            height: 160px;
+            background-color: red;
+            border-radius: 50px 50px 0 0;
+        }
+
+        /*二次筛选
+             1.选择到一class命名为heart的元素
+             nth-child(2):父元素里的第几个子元素
+         */
+        .heart:nth-child(2) {
+            transform: translateX(200px) translateY(-200px);
+            /*移动*/
+            animation: move 5s linear infinite alternate;
+            /*linear:匀速 infinite:循环 反向*/
+        }
+
+        .heart:nth-child(2) .left,
+        .heart:nth-child(2) .right {
+            animation: colorChange 5s linear infinite alternate;
+            /*linear:匀速 infinite:循环 反向*/
+        }
+
+        /*动画:*/
+        @keyframes move {
+            0% {
+                transform: translateX(200px) translateY(-200px);
+            }
+
+            100% {
+                transform: translateX(-200px) translateY(-200px);
+            }
+        }
+
+        @keyframes colorChange {
+
+            /*动画:变颜色*/
+            0% {
+                background-color: red;
+                color: skyblue;
+            }
+
+            50% {
+                background-color: #000;
+                color: white;
+            }
+
+            100% {
+                background-color: skyblue;
+                color: skyblue;
+            }
+        }
+
+
+        /* 名称 */
+        .userName {
+            position: absolute;
+            top: 49vh;
+            left: 47vw;
+            font-size: 1.75em;
+            cursor: default;
+            animation: colorChange 5s linear infinite alternate;
+            background-color: transparent !important;
+        }
+    </style>
+</head>
+<body>
+<div class="aiXin">
+    <div class="container">
+        <div class="heart">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <div class="heart">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <div class="userName"></div>
+    </div>
+</div>
+<script>
+    /*let divButton = document.querySelector('.button');
+    let divList = document.querySelector('.list');
+    divButton.onclick = _=>{
+        if (divList.style.display === '') {
+            divList.style.display = 'block';
+        }else if(divList.style.display === 'none'){
+            divList.style.display = 'block';
+        }else {
+            divList.style.display = 'none';
+        }
+    }*/
+</script>
+</body>
+</html>

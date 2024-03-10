@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset='UTF-8'>
+  <meta name='Keywords' content=''>
+  <meta name='Description' content=''>
+  <title>Document</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+
+  <script src="https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//3866954413554b14bc837949ac48c74a.js"></script>
+  <!-- 简单的控制器 写在相机实例化之后 -->
+  <script src="https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//ca701a915c3a4486a7547b275472b1a1.js"></script>
+</head>
+
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+
+
+    //
+    const canvas = document.querySelector('#canvas');
+    let width = window.innerWidth, height = window.innerHeight;
+
+    window.onload = resize;
+    window.onresize = resize;
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      //更新页面宽高后要改变相机的参数
+      //更新相机的宽高比
+      camera.aspect = width / height;
+      //应用到实际的坐标系中
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    }
+
+
+    function addMesh(material, index) {
+      const geometry = new THREE.BoxGeometry(2, 2, 2, 2, 2, 2);
+
+      const mesh = new THREE.Mesh(geometry, material);
+
+      mesh.position.x = index * 3 - meshList.length / 2 * 3;
+      scene.add(mesh);
+
+    }
+
+
+    //创建场景
+    const scene = new THREE.Scene();
+
+    /*世界背景*/
+    const loader = new THREE.CubeTextureLoader();
+
+    const world = loader.setPath('')
+      .load([
+        'https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//202e82ac5cf549d99401d9b742c21921.jpg', 'https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//540fe96c20e54b2c873fd6ce5e5ff615.jpg',
+        'https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//368b3cbfe0994e8da0209b6dfdb8a221.jpg', 'https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//112a8ce36a9a4db694fb0e8883e39eda.jpg',
+        'https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//b3b7adb4744f419e811e914b942a2c6e.jpg', 'https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//539ae436aa8a4d81abfa1fc3932e89e7.jpg'
+      ]);
+
+    scene.background = world;
+    /*  */
+
+    const texture = new THREE.TextureLoader().load('https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//7f695487ef3d4b07a730f1b996c1bda0.gif');
+    let meshList = [];
+    meshList.push(new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide }));
+    meshList.push(new THREE.MeshNormalMaterial({ side: THREE.DoubleSide }));
+    //wireframe 显示线条
+    meshList.push(new THREE.MeshNormalMaterial({ side: THREE.DoubleSide, wireframe: true }));
+    //flatShading 每一个面接受光照
+    meshList.push(new THREE.MeshNormalMaterial({ side: THREE.DoubleSide }));
+    //Lambert网格材质  一种非光泽表面的材质，没有镜面高光。
+    meshList.push(new THREE.MeshLambertMaterial({ map: texture }));
+    meshList.push(new THREE.MeshLambertMaterial({ map: texture, flatShading: true }));
+    //envMap环境贴图
+    meshList.push(new THREE.MeshLambertMaterial({ map: texture, envMap: scene.background }));
+    //MeshPhongMaterial Phong网格材质 具有镜面高光的光泽表面的材质
+    meshList.push(new THREE.MeshPhongMaterial({ flatShading: true, envMap: scene.background }));
+    //MeshDepthMaterial深度网格材质 深度基于相机远近平面 白色最近，黑色最远。
+    meshList.push(new THREE.MeshDepthMaterial({ map: texture, side: THREE.DoubleSide }));
+    //卡通网格材质
+    meshList.push(new THREE.MeshToonMaterial({ map: texture, side: THREE.DoubleSide }));
+
+    meshList.forEach((material, index) => {
+      addMesh(material, index);
+    })
+
+
+    /*环境光*/
+    //环境光的颜色  光照强度
+    const light1 = new THREE.AmbientLight(0xffffff, 0.3);
+
+    scene.add(light1);
+    /*  */
+
+    /* 点光源 */
+    //十六进制光照颜色  光照强度  从光源到光照强度为0的位置
+    const light2 = new THREE.PointLight(0xffffff, 1, 1000);
+    //设置位置
+    light2.position.set(0, 8, 8);
+    scene.add(light2);
+    /*  */
+
+
+    //真是世界的相机 : 近大远小
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.01, 1000);
+
+
+    //摆放向机的位置 相机的朝向
+    camera.position.z = 8;
+    camera.position.y = 8;
+    //看向哪里
+    camera.lookAt(0, 0, 0);
+
+    //简单的控制相机
+    const control = new THREE.OrbitControls(camera);
+
+    //渲染器 将场景被相机拍摄到的内容渲染出来
+    const renderer = new THREE.WebGLRenderer({ canvas });
+    //渲染位置
+    renderer.setSize(width, height);
+
+    //动画
+    function animation() {
+      requestAnimationFrame(animation);
+      //盒子旋转
+      // box.rotation.x += 0.01;
+      // box.rotation.y += 0.01;
+
+      //更新控制器
+      control.update();
+
+      //持续渲染
+      renderer.render(scene, camera);
+    }
+
+    animation()
+  </script>
+</body>
+
+</html>

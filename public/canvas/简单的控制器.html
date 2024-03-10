@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='Keywords' content=''>
+  <meta name='Description' content=''>
+  <title>Document</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+  
+  <script src="https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//3866954413554b14bc837949ac48c74a.js"></script>
+  <!-- 简单的控制器 写在相机实例化之后 -->
+  <script src="https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//ca701a915c3a4486a7547b275472b1a1.js"></script>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+  //
+  const canvas = document.querySelector('#canvas');
+  let width = window.innerWidth, height = window.innerHeight;
+
+  window.onload = resize;
+  window.onresize = resize;
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    //更新页面宽高后要改变相机的参数
+    //更新相机的宽高比
+    camera.aspect = width / height;
+    //应用到实际的坐标系中
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  }
+
+  //创建立方体 创建网格体 没有单位
+  const geometry = new THREE.BoxBufferGeometry(3, 3, 3);
+
+  //基础简单材质
+  const material = new THREE.MeshNormalMaterial();
+
+  //实际的物体 将立方体和材质添加进去
+  const box = new THREE.Mesh(geometry, material);
+
+  //创建场景
+  const scene = new THREE.Scene();
+
+  //将盒子添加到场景中
+  scene.add(box);
+
+  //真是世界的相机 : 近大远小
+  const camera = new THREE.PerspectiveCamera(75, width / height, 0.01, 1000);
+
+  //摆放向机的位置 相机的朝向
+  camera.position.z = 6;
+  camera.lookAt(0, 0, 0);
+
+  //简单的控制相机
+  const control = new THREE.OrbitControls(camera);
+
+  //渲染器 将场景被相机拍摄到的内容渲染出来
+  const renderer = new THREE.WebGLRenderer({canvas});
+  //渲染位置
+  renderer.setSize(width, height);
+
+  //动画
+  function animation() {
+    requestAnimationFrame(animation);
+    //盒子旋转
+    // box.rotation.x += 0.01;
+    // box.rotation.y += 0.01;
+
+    //更新控制器
+    control.update();
+
+    //持续渲染
+    renderer.render(scene, camera);
+  }
+
+  animation()
+</script>
+</body>
+</html>

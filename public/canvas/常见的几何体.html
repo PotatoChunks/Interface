@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='Keywords' content=''>
+  <meta name='Description' content=''>
+  <title>Document</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+  
+  <script src="https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//3866954413554b14bc837949ac48c74a.js"></script>
+  <!-- 简单的控制器 写在相机实例化之后 -->
+  <script src="https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//ca701a915c3a4486a7547b275472b1a1.js"></script>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+
+  //
+
+  //生成一个具体的物体
+  function getMesh() {
+    //创建立方体 创建网格体 没有单位
+    // const geometry = new THREE.BoxGeometry(2,1,1,2,1,1);
+
+    //创建圆形  CircleGeometry: 半径 分段 第一个分段的起始角度 旋转角度/弧度
+    // const geometry = new THREE.CircleGeometry(3,30,0,Math.PI );
+
+    //创建圆柱  CylinderGeometry : 顶部半径  底部半径  高
+    const geometry = new THREE.CylinderGeometry(2,2,5,29);
+
+    //圆锥 ConeGeometry : 底面半径 高
+    // const geometry = new THREE.ConeGeometry(2,5,29);
+
+    //十二面几何体 DodecahedronGeometry :半径 第二个参数越大越接近球
+    // const geometry = new THREE.DodecahedronGeometry(2,2);
+
+    //平面几何体 生成底面 PlaneGeometry : 宽 高 宽分段 高分段
+    // const geometry = new THREE.PlaneGeometry(10,10,30,30);
+
+    //平面圆环几何体 RingGeometry : 内部半径 外部半径 圆的分段数越大越圆  圆环表面的分段数
+    // const geometry = new THREE.RingGeometry(2,5,20,8);
+
+    //形状几何体 ShapeGeometry
+    /*let x = 0, y = 0;
+
+    const heartShape = new THREE.Shape();
+
+    heartShape.moveTo( x + 5, y + 5 );
+    heartShape.bezierCurveTo( x + 5, y + 5, x + 4, y, x, y );
+    heartShape.bezierCurveTo( x - 6, y, x - 6, y + 7,x - 6, y + 7 );
+    heartShape.bezierCurveTo( x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19 );
+    heartShape.bezierCurveTo( x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7 );
+    heartShape.bezierCurveTo( x + 16, y + 7, x + 16, y, x + 10, y );
+    heartShape.bezierCurveTo( x + 7, y, x + 5, y + 5, x + 5, y + 5 );
+
+    const geometry = new THREE.ShapeGeometry( heartShape ,20);*/
+
+
+    //圆环几何体 TorusGeometry : 圆环的半径  管道的半径 圆环的分段 管道的分段越多越圆
+    // const geometry = new THREE.TorusGeometry( 4,1,10,20 );
+
+
+
+    //根据分段构建网格体
+    const frameGeometry = new THREE.WireframeGeometry(geometry);
+    //根据网格体生成线条 将线条画出来
+    const line = new THREE.LineSegments(frameGeometry);
+
+    //线的宽度
+    line.material.width = 2;
+    //线的颜色
+    line.material.color = new THREE.Color(255,255,255);
+
+    //基础简单材质
+    const material = new THREE.MeshNormalMaterial({
+      //内部也有光
+      side:THREE.DoubleSide
+    });
+
+    const mesh = new THREE.Mesh(geometry, material)
+
+    //实际的物体 将立方体和材质添加进去
+    return line//mesh
+  }
+
+
+
+  //
+  const canvas = document.querySelector('#canvas');
+  let width = window.innerWidth, height = window.innerHeight;
+
+  window.onload = resize;
+  window.onresize = resize;
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    //更新页面宽高后要改变相机的参数
+    //更新相机的宽高比
+    camera.aspect = width / height;
+    //应用到实际的坐标系中
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  }
+
+  //一个立方体
+  const box = getMesh();
+
+
+  //创建场景
+  const scene = new THREE.Scene();
+
+  //将盒子添加到场景中
+  scene.add(box);
+
+  //真是世界的相机 : 近大远小
+  const camera = new THREE.PerspectiveCamera(75, width / height, 0.01, 1000);
+
+  //摆放向机的位置 相机的朝向
+  camera.position.z = 10;
+  camera.lookAt(0, 0, 0);
+
+  //简单的控制相机
+  const control = new THREE.OrbitControls(camera);
+
+  //渲染器 将场景被相机拍摄到的内容渲染出来
+  const renderer = new THREE.WebGLRenderer({canvas});
+  //渲染位置
+  renderer.setSize(width, height);
+
+  //动画
+  function animation() {
+    requestAnimationFrame(animation);
+    //盒子旋转
+    // box.rotation.x += 0.01;
+    // box.rotation.y += 0.01;
+
+    //更新控制器
+    control.update();
+
+    //持续渲染
+    renderer.render(scene, camera);
+  }
+
+  animation()
+</script>
+</body>
+</html>

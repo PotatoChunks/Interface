@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='Keywords' content=''>
+  <meta name='Description' content=''>
+  <title>Document</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+  
+  <script src="https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//3866954413554b14bc837949ac48c74a.js"></script>
+  <!-- 简单的控制器 写在相机实例化之后 -->
+  <script src="https://cdn.tmooc.cn//tnote-web//bsfile/ckimg/2023/11/9//ca701a915c3a4486a7547b275472b1a1.js"></script>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+
+  function getStarGeometry(far, near, depth, count=5) {
+    //四个参数 最远点的长度  最近点的长度  厚度  边数5
+    const geometry = new THREE.Geometry();
+
+    //厚度
+    let frontPoint = new THREE.Vector3(0, 0, depth);
+    geometry.vertices.push(frontPoint);
+    //
+    let backPoint = new THREE.Vector3(0, 0, -depth);
+    geometry.vertices.push(backPoint);
+
+    //生成五个较远的点
+    for (let i = 0;i <= count;i++){
+      let farEuler = new THREE.Euler(0, 0, Math.PI*2 * i/count);
+      let farPoint = new THREE.Vector3(far, 0, 0).applyEuler(farEuler);
+      geometry.vertices.push(farPoint);
+      let nearEuler = new THREE.Euler(0, 0, Math.PI*2 * i/count + Math.PI/count);
+      let nearPoint = new THREE.Vector3(near, 0, 0).applyEuler(nearEuler);
+      geometry.vertices.push(nearPoint);
+    }
+
+    const normal = new THREE.Vector3(0,1,0);
+
+    for (let i = 0;i < count*2;i++){
+      geometry.faces.push(new THREE.Face3(0,i+2,i+3, normal));
+      geometry.faces.push(new THREE.Face3(1,i+2,i+3, normal));
+    }
+
+    //旋转一下
+    geometry.rotateZ(Math.PI/count/2)
+
+    return geometry
+
+  }
+
+
+
+
+  //
+  const canvas = document.querySelector('#canvas');
+  let width = window.innerWidth, height = window.innerHeight;
+
+  window.onload = resize;
+  window.onresize = resize;
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    //更新页面宽高后要改变相机的参数
+    //更新相机的宽高比
+    camera.aspect = width / height;
+    //应用到实际的坐标系中
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  }
+
+  //创建场景
+  const scene = new THREE.Scene();
+
+  //生成物体
+  const star1Geo = getStarGeometry(8,3,2.5,5);
+
+
+  //材质
+  //基础简单材质
+  const materials = new THREE.MeshNormalMaterial({
+    //内部也有光
+    side:THREE.DoubleSide
+  });
+
+  const star1Mesh = new THREE.Mesh(star1Geo, materials);
+  //第二个星星
+  const star2Geo = getStarGeometry(8,3,2.5,5);
+  const star2Mesh = new THREE.Mesh(star2Geo, materials);
+  //改变位置
+  star2Mesh.position.set(0,10,0);
+
+  //根据分段构建网格体
+  const frameGeometry = new THREE.WireframeGeometry(star1Geo);
+  //根据网格体生成线条 将线条画出来
+  const line = new THREE.LineSegments(frameGeometry);
+
+  //线的宽度
+  line.material.width = 2;
+  //线的颜色
+  line.material.color = new THREE.Color(255,255,255);
+
+  //棒子
+  const stickGeometry = new THREE.CylinderGeometry(0.5, 0.5, 20, 30)
+  const stickMesh = new THREE.Mesh(stickGeometry, materials);
+  stickMesh.position.set(0, -10, 0);
+
+  //添加模型
+  let obj = new THREE.Object3D();
+  obj.add(star1Mesh,star2Mesh,stickMesh);
+
+  //场景里添加模型对象
+  scene.add(obj);
+
+  //建立一个简单的坐标系
+  const axesHelper = new THREE.AxesHelper(15);
+  scene.add( axesHelper );
+
+
+
+  //真是世界的相机 : 近大远小
+  const camera = new THREE.PerspectiveCamera(75, width / height, 0.01, 1000);
+
+
+
+  //摆放向机的位置 相机的朝向
+  camera.position.z = 32;
+  //看向哪里
+  camera.lookAt(0, 0, 0);
+
+  //简单的控制相机
+  const control = new THREE.OrbitControls(camera);
+
+  //渲染器 将场景被相机拍摄到的内容渲染出来
+  const renderer = new THREE.WebGLRenderer({canvas});
+  //渲染位置
+  renderer.setSize(width, height);
+
+  //动画
+  function animation() {
+    requestAnimationFrame(animation);
+
+    obj.children[1].rotation.y +=0.05;
+    obj.children[0].rotation.y += -0.05;
+
+    //更新控制器
+    control.update();
+
+    //持续渲染
+    renderer.render(scene, camera);
+  }
+
+  animation()
+</script>
+</body>
+</html>
