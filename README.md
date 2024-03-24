@@ -1,1 +1,1 @@
-Thanks for vercel.
+Thanks for vercel
